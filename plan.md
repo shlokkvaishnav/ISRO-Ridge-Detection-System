@@ -1,4 +1,4 @@
-# Plan — Wrinkle-Ridge-Method-Audit
+# Plan — ISRO-Ridge-Detection-System
 
 ## Research question
 

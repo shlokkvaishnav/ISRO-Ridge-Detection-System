@@ -1,11 +1,12 @@
-# Wrinkle-Ridge-Method-Audit
+# ISRO-Ridge-Detection-System
 
-**Do classical phase-symmetry morphology, Hessian-based ridge filtering, and deep learning
-actually agree on which lunar wrinkle ridges exist — or does each have a characteristic
-blind spot the others don't share?**
+A lunar wrinkle ridge detection system built and evaluated across three approaches —
+classical phase-symmetry morphology, Hessian-based ridge filtering, and deep learning —
+compared head-to-head on the same DEM tiles to find out which ridges each one catches,
+which it misses, and why.
 
-See [`plan.md`](plan.md) for the full research plan: the three arms being compared, data
-sources (LOLA DEM, LROC WAC, Chandrayaan-2 TMC-2), comparison methodology, sequencing, and
+See [`plan.md`](plan.md) for the full plan: the three arms being implemented, data sources
+(LOLA DEM, LROC WAC, Chandrayaan-2 TMC-2), comparison methodology, sequencing, and
 alternate approaches considered.
 
 ## Status
