@@ -13,6 +13,8 @@ import json
 import os
 import random
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 import rasterio
@@ -89,6 +91,15 @@ def main() -> None:
     )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--pad-km", type=float, default=2.0)
+    parser.add_argument(
+        "--workers", type=int, default=8,
+        help="concurrent extraction threads. The bottleneck is network I/O "
+        "(many small /vsicurl/ range requests per tile against non-tiled "
+        "source rasters, see research/DECISION_LOG.md), not local CPU, so "
+        "this speeds extraction up substantially. Each worker opens its own "
+        "raster handles -- GDAL dataset handles aren't safe to share across "
+        "threads.",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(SHP_PATH):
@@ -121,36 +132,62 @@ def main() -> None:
     sample = stratified_sample_by_length(candidates, n_needed, seed=args.seed)
     print(f"  sampled {len(sample)} NEW segments across length quartiles (excluding {len(existing_ids)} already extracted)")
 
-    print("Opening remote rasters (no full download, windowed reads only)...")
-    with open_gld100_dem() as dem_src, open_wac_mosaic() as wac_src:
-        for seg in sample:
-            tile_dir = os.path.join(TILES_DIR, str(seg.id))
-            os.makedirs(tile_dir, exist_ok=True)
+    manifest_lock = threading.Lock()
 
+    def extract_one(seg):
+        # Each worker opens its own raster handles -- GDAL dataset objects
+        # are not safe to share across threads, unlike the file paths
+        # themselves (opening a remote handle is cheap; it's the windowed
+        # read that's slow, which is exactly what threading overlaps).
+        with open_gld100_dem() as dem_src, open_wac_mosaic() as wac_src:
             tiles = extract_tile_pair(dem_src, wac_src, seg.bbox, pad_km=args.pad_km)
 
-            dem_path = os.path.join(tile_dir, "dem.tif")
-            wac_path = os.path.join(tile_dir, "wac.tif")
-            save_geotiff(dem_path, tiles["dem"], tiles["dem_transform"], tiles["dem_crs"], "float32")
-            save_geotiff(wac_path, tiles["wac"], tiles["wac_transform"], tiles["wac_crs"], "uint8")
+        tile_dir = os.path.join(TILES_DIR, str(seg.id))
+        os.makedirs(tile_dir, exist_ok=True)
+        dem_path = os.path.join(tile_dir, "dem.tif")
+        wac_path = os.path.join(tile_dir, "wac.tif")
+        save_geotiff(dem_path, tiles["dem"], tiles["dem_transform"], tiles["dem_crs"], "float32")
+        save_geotiff(wac_path, tiles["wac"], tiles["wac_transform"], tiles["wac_crs"], "uint8")
 
-            manifest.append(
-                {
-                    "id": seg.id,
-                    "length_km": seg.length_km,
-                    "bbox": seg.bbox,
-                    "n_vertices": len(seg.points),
-                    "dem_path": os.path.relpath(dem_path, TILES_DIR),
-                    "wac_path": os.path.relpath(wac_path, TILES_DIR),
-                    "dem_shape": list(tiles["dem"].shape),
-                    "wac_shape": list(tiles["wac"].shape),
-                }
+        return {
+            "id": seg.id,
+            "length_km": seg.length_km,
+            "bbox": seg.bbox,
+            "n_vertices": len(seg.points),
+            "dem_path": os.path.relpath(dem_path, TILES_DIR),
+            "wac_path": os.path.relpath(wac_path, TILES_DIR),
+            "dem_shape": list(tiles["dem"].shape),
+            "wac_shape": list(tiles["wac"].shape),
+        }
+
+    print(f"Extracting {len(sample)} tiles with {args.workers} concurrent workers...")
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(extract_one, seg): seg for seg in sample}
+        for future in as_completed(futures):
+            seg = futures[future]
+            try:
+                entry = future.result()
+            except Exception as exc:
+                print(f"  segment {seg.id}: FAILED ({exc})", flush=True)
+                continue
+
+            # Write after every tile, not once at the end: a run that gets
+            # interrupted (Ctrl-C, a killed background job) previously lost
+            # every already-extracted tile's manifest entry even though the
+            # actual GeoTIFF files were already written to disk -- a real
+            # incident, recovered manually once, not meant to repeat.
+            with manifest_lock:
+                manifest.append(entry)
+                with open(manifest_path, "w") as f:
+                    json.dump(manifest, f, indent=2)
+                total_so_far = len(manifest)
+            print(
+                f"  segment {entry['id']}: length={entry['length_km']:.2f}km, "
+                f"dem={entry['dem_shape']} ({total_so_far} total)",
+                flush=True,
             )
-            print(f"  segment {seg.id}: length={seg.length_km:.2f}km, dem={tiles['dem'].shape}, wac={tiles['wac'].shape}")
 
-    with open(manifest_path, "w") as f:
-        json.dump(manifest, f, indent=2)
-    print(f"Manifest written to {manifest_path} ({len(manifest)} tiles total, {len(sample)} newly added)")
+    print(f"Done: {manifest_path} has {len(manifest)} tiles total, {len(sample)} newly added this run")
 
 
 if __name__ == "__main__":
