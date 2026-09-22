@@ -38,3 +38,38 @@ Arm A (40.4% recall, 33.2% coverage) and Arm B (43.9% recall, ~similar coverage 
 
 **Confounds considered**
 Weak (polyline-buffer) labels are a real, different supervision signal from DBR-Net's hand-labeled masks -- any recall/IoU shortfall could be a label-quality artifact rather than a data-volume or architecture artifact, and this project's current setup cannot cleanly separate those two causes without a small hand-labeled validation subset, which does not exist yet. Flagged as an explicit limitation, not solved by this experiment.
+
+---
+
+## Amendments (dated notes, per research/GIT_WORKFLOW.md's spec discipline)
+
+**2026-09-22 -- infrastructure incidents en route, before any training result:**
+
+- `build_tile_dataset.py` originally overwrote `manifest.json` wholesale on every
+  run. Caught before it destroyed the original 30-tile reference set (stopped a
+  run mid-execution once noticed); fixed to be additive/idempotent.
+- The same script then only wrote `manifest.json` once, at the end of the whole
+  extraction loop. Stopping a run partway through (to reconsider the target
+  tile count given how slow serial extraction was) lost 11 tiles' worth of
+  manifest entries even though the actual GeoTIFF files were already written
+  to disk -- real network cost paid, not reflected in the manifest. Recovered
+  10 of 11 manually (the 11th was mid-write, discarded); fixed to write after
+  every tile.
+- Serial extraction was too slow to reach a meaningful tile count in
+  reasonable time (non-tiled source rasters mean large-bbox segments require
+  many scattered `/vsicurl/` strip reads). Parallelized with a thread pool
+  (I/O-bound, not CPU-bound) -- real speedup, not parallel-for-its-own-sake.
+  Scaled the pilot 30 -> 120 tiles this way (still far short of DBR-Net's
+  1,069 hand-labeled tiles, see the confounds section above).
+- The GitHub repo was found to be private when the Kaggle training kernel's
+  anonymous `git clone` failed with an auth error -- unclear whether it was
+  switched from public at some point or a state neither party fully tracked.
+  Asked the user rather than assuming either direction; they confirmed
+  restoring it to public (its original state) was correct, done via
+  `gh repo edit --visibility public`.
+
+None of these affect the experiment's actual hypothesis or design -- they're
+tooling/infrastructure issues encountered while building toward the first
+training run, recorded here because research/GIT_WORKFLOW.md's spec
+discipline says amendments get dated notes, not silently folded into a
+rewritten history.

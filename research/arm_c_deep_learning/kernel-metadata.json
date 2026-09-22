@@ -1,5 +1,5 @@
 {
-  "id": "shlokkvaishnav/isro-ridge-arm-c",
+  "id": "shlokkvaishnav/isro-ridge-detection-arm-c-training",
   "title": "ISRO Ridge Detection - Arm C training",
   "code_file": "kaggle_train.py",
   "language": "python",
