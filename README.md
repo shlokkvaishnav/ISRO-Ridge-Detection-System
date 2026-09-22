@@ -11,54 +11,62 @@ alternate approaches considered.
 
 ## Status
 
-**Arm A implemented; a shape-filtering fix roughly tripled real-ridge recall on real GLD100
-tiles, but the mask is still ~30-36% of tile area — a partial, measured improvement, not a
-solved detector.** 30-tile pilot pulled directly from the remote LROC WAC + GLD100 mosaics
-(no full download, see `research/DECISION_LOG.md`), stratified across the Thompson et al.
-2017 ridge catalog. Arms B (Hessian filters) and C (deep learning) not started.
+**Arms A and B both implemented; head-to-head on real GLD100 tiles they perform comparably
+(~40-44% aggregate ridge-vertex recall, 28-40% mask coverage), which is the strongest
+evidence yet that 100m/px terrain roughness — not either specific filter — is the real
+bottleneck.** 30-tile pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no
+full download, see `research/DECISION_LOG.md`), stratified across the Thompson et al. 2017
+ridge catalog. Arm C (deep learning) not started.
 
 **ESTABLISHED**
-> On synthetic DEMs (straight ridge, curved ridge, flat/no-ridge control), Arm A correctly
-> detects ridges only when present and tracks a curved ridge's true centerline to within a
-> few pixels on average. `tests/test_classical_pipeline.py` (6 tests, all passing).
+> On synthetic DEMs, both Arm A and Arm B correctly detect ridges only when present and
+> track a curved ridge's centerline to within a few pixels on average (11 tests total,
+> `tests/test_classical_pipeline.py` + `tests/test_hessian_pipeline.py`, all passing).
 >
-> On real GLD100 tiles, the original percentile-threshold-then-close approach failed: only
-> 1 of 14 true ridge vertices (segment 3461) cleared the mask's own 90th-percentile cutoff.
-> Reordering to shape-filter individual fragments (favoring elongated components over blobs)
-> *before* gap-linking, plus loosening the threshold to the 75th percentile, roughly tripled
-> aggregate recall across all 6 inspected tiles (6/52 -> 21/52 true vertices covered). The
-> mask still covers 30-36% of tile area on every tile tested — visually large amorphous
-> patches, not a clean ridge trace. Full numbers and mechanism in `research/DECISION_LOG.md`.
+> On real GLD100 tiles, Arm A's original percentile-threshold-then-close approach failed
+> (1/14 true vertices on segment 3461); shape-filtering fragments *before* gap-linking
+> roughly tripled aggregate recall (6/52 -> 21/52 across 6 tiles). Arm B (Hessian/frangi),
+> reusing Arm A's exact post-processing so the comparison isolates the filter itself, gets a
+> close but not clearly better result: 25/57 (43.9%) vs Arm A's 23/57 (40.4%) aggregate
+> recall, with per-tile wins split roughly evenly between the two arms, and both landing in
+> the same 28-40% mask-coverage range on every tile. Full numbers in `research/DECISION_LOG.md`.
 
-**HYPOTHESIS** — carried into the eventual arm comparison, not yet tested against B/C:
-> That the "two flanks, not one crest line" output shape (see
-> `research/DECISION_LOG.md`) is specific to slope-domain phase symmetry and that Arm B
-> (Hessian filters, run on the same slope map) will show the same shape, while Arm C (if
-> trained against a catalog's single-centerline ground truth) will not.
+**HYPOTHESIS**
+> That the real-tile clutter problem reflects something more fundamental than either
+> specific ridge-detection filter — most likely that 100m/px GLD100 terrain roughness
+> genuinely competes with real wrinkle-ridge signal at the same spatial scale, which neither
+> phase symmetry nor Hessian-eigenvalue filtering can fully separate from a slope map alone.
+> This is the strongest evidence yet for needing Arm C rather than continued classical-arm
+> tuning — not proven, and still needs the per-morphology-class/degradation-bucket
+> breakdown `plan.md` calls for, not just an aggregate number.
 >
-> Whether further real-tile gains need a fundamentally different signal (orientation
-> coherence, an absolute physical-units floor) or reflect a real ceiling on slope-domain
-> classical detection at 100m/px that motivates Arm C — not yet distinguished from continued
-> threshold/shape-parameter tuning.
+> That the "two flanks, not one crest line" output shape (see `research/DECISION_LOG.md`)
+> is specific to slope-domain filtering and that Arm C (if trained against the catalog's
+> single-centerline ground truth) will not reproduce it. Not yet tested.
 
 **OPEN**
-> Whether the flat-tile false-positive risk from percentile-based grayscale normalization
-> (separate from the terrain-roughness finding above) is a real problem on actual tiles, or
-> only synthetic near-zero-relief inputs.
+> Whether `meijering`/`sato` (Arm B's other two methods, not yet tried) perform
+> meaningfully differently from `frangi` on the same tiles.
 >
-> Whether the shape-filtering improvement holds across all 30 pilot tiles or just the 6
-> inspected in detail so far.
+> Whether Arm A and Arm B are catching the *same* true-ridge vertices or complementary
+> ones — an aggregate recall comparison doesn't show this, and if they're substantially
+> non-overlapping an ensemble might help even without deep learning. Untested.
+>
+> Whether the flat-tile false-positive risk from percentile-based grayscale normalization
+> is a real problem on actual tiles, or only synthetic near-zero-relief inputs.
+>
+> Whether these findings hold across all 30 pilot tiles or just the 6 inspected in detail
+> so far.
 
 **DO NOT CLAIM**
-> That Arm A "works" on real lunar data, or that the current thresholding scheme is
-> finished — it's a measured, partial recall improvement with a real, unmeasured precision
-> cost (30-36% mask coverage). Do not claim the phase-symmetry filter itself is broken; the
-> response does show local structure near the true ridge, the threshold/shape step is the
-> better-supported bottleneck but not the confirmed sole one.
+> That either arm "works" on real lunar data in a usable sense, or that Arm B is better/worse
+> than Arm A — the aggregate numbers are close and the per-tile pattern is mixed. Do not
+> claim the terrain-roughness hypothesis above is confirmed; it's the best-supported
+> explanation so far, not a tested one.
 
 See [`plan.md`](plan.md) for the full plan and `research/DECISION_LOG.md` for implementation
-decisions and full findings (why `phasepack` wasn't used, flank-detection, flat-tile, and
-real-data clutter/shape-filtering findings).
+decisions and full findings (why `phasepack` wasn't used, flank-detection, flat-tile,
+real-data clutter/shape-filtering, and Arm A vs Arm B comparison findings).
 
 ## Repository structure
 

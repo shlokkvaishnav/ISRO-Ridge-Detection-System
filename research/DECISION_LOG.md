@@ -2,6 +2,52 @@
 
 Newest first.
 
+## 2026-09-22 — Arm B (Hessian filters) implemented; head-to-head with Arm A on real tiles
+
+`src/hessian/ridge_filter.py` wraps scikit-image's `frangi`/`meijering`/`sato` directly
+(no from-scratch reimplementation -- these are already well-tested library functions, unlike
+phase symmetry which needed vendoring, see the `phasepack` entry below). `src/hessian/pipeline.py`
+reuses Arm A's exact threshold/shape-filter/gap-link morphology
+(`src/classical/morphology.py`) and slope preprocessing unchanged, so any difference between
+arms is attributable to the ridge-detection filter itself, not different post-processing.
+
+**ESTABLISHED**
+> Head-to-head on the same 6 real tiles used for Arm A's tuning (see the two entries below),
+> same truth-vertex-recall metric: Arm B (frangi) gets 25/57 (43.9%) aggregate recall vs
+> Arm A's 23/57 (40.4%) -- close, not a clear win for either. Per-tile, neither arm
+> dominates: Arm B wins on 3674 (3 vs 2), 1851 (3 vs 1), 3461 (10 vs 7); Arm A wins on 748
+> (3 vs 2), 5017 (4 vs 2), 4098 (6 vs 5). Both arms' mask coverage lands in the same 28-40%
+> of tile area range on every tile.
+
+**HYPOTHESIS** — strengthened, not yet confirmed:
+> That the real-tile clutter problem (both arms landing in the same 30-40% mask-coverage,
+> partial-recall range, despite using different ridge-detection filters entirely) reflects
+> something more fundamental than either specific filter -- most likely that 100m/px GLD100
+> terrain roughness genuinely competes with real wrinkle-ridge signal at the same spatial
+> scale, which neither a phase-symmetry nor a Hessian-eigenvalue filter can fully separate
+> from a slope map alone. This is the strongest evidence yet for needing Arm C (deep
+> learning, which can learn texture/context cues beyond local ridge-shaped-response filters)
+> rather than continued classical-arm tuning -- but not proven; still needs the per-
+> morphology-class/degradation-bucket breakdown the original plan.md calls for, not just an
+> aggregate number.
+
+**OPEN**
+> Whether `meijering` or `sato` (not yet tried, only `frangi`) perform meaningfully
+> differently from each other on the same tiles -- Arm B currently only tested with one of
+> its three available methods.
+>
+> Whether the two arms are catching the *same* vertices or complementary ones -- an
+> aggregate recall comparison doesn't show this. If Arm A and Arm B's hits are substantially
+> non-overlapping, an ensemble might outperform either alone even without deep learning;
+> untested.
+
+**DO NOT CLAIM**
+> That Arm B is "better" than Arm A, or vice versa -- the aggregate numbers are close and
+> the per-tile pattern is mixed. Do not claim the terrain-roughness hypothesis above is
+> confirmed -- it's the best-supported explanation so far, not a tested one.
+
+## 2026-09-22 — Shape-filtered thresholding: real, partial improvement, not a fix
+
 ## 2026-09-22 — Shape-filtered thresholding: real, partial improvement, not a fix
 
 Follow-up to the same-day entry below. Tuned against real tiles (not assumed): the fix is
