@@ -9,8 +9,8 @@
       26.632236493225207
     ],
     "n_vertices": 5,
-    "dem_path": "3674\\dem.tif",
-    "wac_path": "3674\\wac.tif",
+    "dem_path": "3674/dem.tif",
+    "wac_path": "3674/wac.tif",
     "dem_shape": [
       85,
       65
@@ -30,8 +30,8 @@
       -27.35965153790039
     ],
     "n_vertices": 5,
-    "dem_path": "4032\\dem.tif",
-    "wac_path": "4032\\wac.tif",
+    "dem_path": "4032/dem.tif",
+    "wac_path": "4032/wac.tif",
     "dem_shape": [
       56,
       87
@@ -51,8 +51,8 @@
       51.58265218284058
     ],
     "n_vertices": 3,
-    "dem_path": "479\\dem.tif",
-    "wac_path": "479\\wac.tif",
+    "dem_path": "479/dem.tif",
+    "wac_path": "479/wac.tif",
     "dem_shape": [
       62,
       79
@@ -72,8 +72,8 @@
       -1.941374379387014
     ],
     "n_vertices": 5,
-    "dem_path": "2437\\dem.tif",
-    "wac_path": "2437\\wac.tif",
+    "dem_path": "2437/dem.tif",
+    "wac_path": "2437/wac.tif",
     "dem_shape": [
       66,
       59
@@ -93,8 +93,8 @@
       58.004104867255315
     ],
     "n_vertices": 4,
-    "dem_path": "4411\\dem.tif",
-    "wac_path": "4411\\wac.tif",
+    "dem_path": "4411/dem.tif",
+    "wac_path": "4411/wac.tif",
     "dem_shape": [
       60,
       153
@@ -114,8 +114,8 @@
       60.90694910507599
     ],
     "n_vertices": 2,
-    "dem_path": "4327\\dem.tif",
-    "wac_path": "4327\\wac.tif",
+    "dem_path": "4327/dem.tif",
+    "wac_path": "4327/wac.tif",
     "dem_shape": [
       46,
       107
@@ -135,8 +135,8 @@
       48.667618655084894
     ],
     "n_vertices": 3,
-    "dem_path": "3845\\dem.tif",
-    "wac_path": "3845\\wac.tif",
+    "dem_path": "3845/dem.tif",
+    "wac_path": "3845/wac.tif",
     "dem_shape": [
       63,
       84
@@ -156,8 +156,8 @@
       -26.678250411203294
     ],
     "n_vertices": 3,
-    "dem_path": "3028\\dem.tif",
-    "wac_path": "3028\\wac.tif",
+    "dem_path": "3028/dem.tif",
+    "wac_path": "3028/wac.tif",
     "dem_shape": [
       60,
       64
@@ -177,8 +177,8 @@
       -26.704462121412234
     ],
     "n_vertices": 6,
-    "dem_path": "4026\\dem.tif",
-    "wac_path": "4026\\wac.tif",
+    "dem_path": "4026/dem.tif",
+    "wac_path": "4026/wac.tif",
     "dem_shape": [
       73,
       103
@@ -198,8 +198,8 @@
       -21.928837170252283
     ],
     "n_vertices": 7,
-    "dem_path": "3112\\dem.tif",
-    "wac_path": "3112\\wac.tif",
+    "dem_path": "3112/dem.tif",
+    "wac_path": "3112/wac.tif",
     "dem_shape": [
       104,
       79
@@ -219,8 +219,8 @@
       -6.915052147556651
     ],
     "n_vertices": 6,
-    "dem_path": "4865\\dem.tif",
-    "wac_path": "4865\\wac.tif",
+    "dem_path": "4865/dem.tif",
+    "wac_path": "4865/wac.tif",
     "dem_shape": [
       58,
       108
@@ -240,8 +240,8 @@
       24.86363207530269
     ],
     "n_vertices": 8,
-    "dem_path": "1851\\dem.tif",
-    "wac_path": "1851\\wac.tif",
+    "dem_path": "1851/dem.tif",
+    "wac_path": "1851/wac.tif",
     "dem_shape": [
       127,
       75
@@ -261,8 +261,8 @@
       53.07870653557001
     ],
     "n_vertices": 5,
-    "dem_path": "4201\\dem.tif",
-    "wac_path": "4201\\wac.tif",
+    "dem_path": "4201/dem.tif",
+    "wac_path": "4201/wac.tif",
     "dem_shape": [
       89,
       135
@@ -282,8 +282,8 @@
       -4.395024090492257
     ],
     "n_vertices": 5,
-    "dem_path": "1194\\dem.tif",
-    "wac_path": "1194\\wac.tif",
+    "dem_path": "1194/dem.tif",
+    "wac_path": "1194/wac.tif",
     "dem_shape": [
       101,
       62
@@ -303,8 +303,8 @@
       0.2310735189359434
     ],
     "n_vertices": 5,
-    "dem_path": "2430\\dem.tif",
-    "wac_path": "2430\\wac.tif",
+    "dem_path": "2430/dem.tif",
+    "wac_path": "2430/wac.tif",
     "dem_shape": [
       108,
       101
@@ -324,8 +324,8 @@
       -2.6221294478954755
     ],
     "n_vertices": 7,
-    "dem_path": "1201\\dem.tif",
-    "wac_path": "1201\\wac.tif",
+    "dem_path": "1201/dem.tif",
+    "wac_path": "1201/wac.tif",
     "dem_shape": [
       120,
       88
@@ -345,8 +345,8 @@
       42.099347334808876
     ],
     "n_vertices": 8,
-    "dem_path": "748\\dem.tif",
-    "wac_path": "748\\wac.tif",
+    "dem_path": "748/dem.tif",
+    "wac_path": "748/wac.tif",
     "dem_shape": [
       156,
       80
@@ -366,8 +366,8 @@
       -4.011120678053203
     ],
     "n_vertices": 7,
-    "dem_path": "5017\\dem.tif",
-    "wac_path": "5017\\wac.tif",
+    "dem_path": "5017/dem.tif",
+    "wac_path": "5017/wac.tif",
     "dem_shape": [
       145,
       95
@@ -387,8 +387,8 @@
       14.581676875840149
     ],
     "n_vertices": 6,
-    "dem_path": "1937\\dem.tif",
-    "wac_path": "1937\\wac.tif",
+    "dem_path": "1937/dem.tif",
+    "wac_path": "1937/wac.tif",
     "dem_shape": [
       141,
       63
@@ -408,8 +408,8 @@
       58.613074072785565
     ],
     "n_vertices": 15,
-    "dem_path": "4098\\dem.tif",
-    "wac_path": "4098\\wac.tif",
+    "dem_path": "4098/dem.tif",
+    "wac_path": "4098/wac.tif",
     "dem_shape": [
       198,
       134
@@ -429,8 +429,8 @@
       -46.588819327020516
     ],
     "n_vertices": 6,
-    "dem_path": "5752\\dem.tif",
-    "wac_path": "5752\\wac.tif",
+    "dem_path": "5752/dem.tif",
+    "wac_path": "5752/wac.tif",
     "dem_shape": [
       159,
       125
@@ -450,8 +450,8 @@
       -9.887347862385923
     ],
     "n_vertices": 6,
-    "dem_path": "4896\\dem.tif",
-    "wac_path": "4896\\wac.tif",
+    "dem_path": "4896/dem.tif",
+    "wac_path": "4896/wac.tif",
     "dem_shape": [
       143,
       58
@@ -471,8 +471,8 @@
       -4.420049950845359
     ],
     "n_vertices": 5,
-    "dem_path": "1199\\dem.tif",
-    "wac_path": "1199\\wac.tif",
+    "dem_path": "1199/dem.tif",
+    "wac_path": "1199/wac.tif",
     "dem_shape": [
       163,
       115
@@ -492,8 +492,8 @@
       7.715391373595757
     ],
     "n_vertices": 16,
-    "dem_path": "2368\\dem.tif",
-    "wac_path": "2368\\wac.tif",
+    "dem_path": "2368/dem.tif",
+    "wac_path": "2368/wac.tif",
     "dem_shape": [
       278,
       264
@@ -513,8 +513,8 @@
       45.70946525401771
     ],
     "n_vertices": 29,
-    "dem_path": "667\\dem.tif",
-    "wac_path": "667\\wac.tif",
+    "dem_path": "667/dem.tif",
+    "wac_path": "667/wac.tif",
     "dem_shape": [
       451,
       1069
@@ -534,8 +534,8 @@
       23.495352506741053
     ],
     "n_vertices": 11,
-    "dem_path": "5984\\dem.tif",
-    "wac_path": "5984\\wac.tif",
+    "dem_path": "5984/dem.tif",
+    "wac_path": "5984/wac.tif",
     "dem_shape": [
       237,
       190
@@ -555,8 +555,8 @@
       1.5356450639600772
     ],
     "n_vertices": 19,
-    "dem_path": "432\\dem.tif",
-    "wac_path": "432\\wac.tif",
+    "dem_path": "432/dem.tif",
+    "wac_path": "432/wac.tif",
     "dem_shape": [
       423,
       124
@@ -576,8 +576,8 @@
       -29.04361960074687
     ],
     "n_vertices": 13,
-    "dem_path": "5464\\dem.tif",
-    "wac_path": "5464\\wac.tif",
+    "dem_path": "5464/dem.tif",
+    "wac_path": "5464/wac.tif",
     "dem_shape": [
       107,
       219
@@ -597,8 +597,8 @@
       1.667227274556708
     ],
     "n_vertices": 10,
-    "dem_path": "2545\\dem.tif",
-    "wac_path": "2545\\wac.tif",
+    "dem_path": "2545/dem.tif",
+    "wac_path": "2545/wac.tif",
     "dem_shape": [
       217,
       115
@@ -618,8 +618,8 @@
       1.2518634066386318
     ],
     "n_vertices": 14,
-    "dem_path": "3461\\dem.tif",
-    "wac_path": "3461\\wac.tif",
+    "dem_path": "3461/dem.tif",
+    "wac_path": "3461/wac.tif",
     "dem_shape": [
       117,
       317
@@ -639,8 +639,8 @@
       23.15562623464018
     ],
     "n_vertices": 5,
-    "dem_path": "1257\\dem.tif",
-    "wac_path": "1257\\wac.tif",
+    "dem_path": "1257/dem.tif",
+    "wac_path": "1257/wac.tif",
     "dem_shape": [
       53,
       87
@@ -660,8 +660,8 @@
       57.10488807178216
     ],
     "n_vertices": 5,
-    "dem_path": "4730\\dem.tif",
-    "wac_path": "4730\\wac.tif",
+    "dem_path": "4730/dem.tif",
+    "wac_path": "4730/wac.tif",
     "dem_shape": [
       112,
       157
@@ -681,8 +681,8 @@
       46.077802163771
     ],
     "n_vertices": 5,
-    "dem_path": "634\\dem.tif",
-    "wac_path": "634\\wac.tif",
+    "dem_path": "634/dem.tif",
+    "wac_path": "634/wac.tif",
     "dem_shape": [
       86,
       73
@@ -702,8 +702,8 @@
       -12.612213238046706
     ],
     "n_vertices": 6,
-    "dem_path": "1142\\dem.tif",
-    "wac_path": "1142\\wac.tif",
+    "dem_path": "1142/dem.tif",
+    "wac_path": "1142/wac.tif",
     "dem_shape": [
       81,
       51
@@ -723,8 +723,8 @@
       24.717147519716324
     ],
     "n_vertices": 3,
-    "dem_path": "1259\\dem.tif",
-    "wac_path": "1259\\wac.tif",
+    "dem_path": "1259/dem.tif",
+    "wac_path": "1259/wac.tif",
     "dem_shape": [
       65,
       76
@@ -744,8 +744,8 @@
       9.726370193190236
     ],
     "n_vertices": 4,
-    "dem_path": "2361\\dem.tif",
-    "wac_path": "2361\\wac.tif",
+    "dem_path": "2361/dem.tif",
+    "wac_path": "2361/wac.tif",
     "dem_shape": [
       73,
       54
@@ -765,8 +765,8 @@
       18.298551456489065
     ],
     "n_vertices": 4,
-    "dem_path": "3612\\dem.tif",
-    "wac_path": "3612\\wac.tif",
+    "dem_path": "3612/dem.tif",
+    "wac_path": "3612/wac.tif",
     "dem_shape": [
       87,
       64
@@ -786,8 +786,8 @@
       55.86661198765849
     ],
     "n_vertices": 4,
-    "dem_path": "4211\\dem.tif",
-    "wac_path": "4211\\wac.tif",
+    "dem_path": "4211/dem.tif",
+    "wac_path": "4211/wac.tif",
     "dem_shape": [
       66,
       81
@@ -807,8 +807,8 @@
       57.62762289586614
     ],
     "n_vertices": 4,
-    "dem_path": "4292\\dem.tif",
-    "wac_path": "4292\\wac.tif",
+    "dem_path": "4292/dem.tif",
+    "wac_path": "4292/wac.tif",
     "dem_shape": [
       63,
       105
@@ -828,8 +828,8 @@
       61.7018846389714
     ],
     "n_vertices": 6,
-    "dem_path": "4371\\dem.tif",
-    "wac_path": "4371\\wac.tif",
+    "dem_path": "4371/dem.tif",
+    "wac_path": "4371/wac.tif",
     "dem_shape": [
       83,
       112
@@ -849,8 +849,8 @@
       62.3050038460548
     ],
     "n_vertices": 4,
-    "dem_path": "4788\\dem.tif",
-    "wac_path": "4788\\wac.tif",
+    "dem_path": "4788/dem.tif",
+    "wac_path": "4788/wac.tif",
     "dem_shape": [
       61,
       175
@@ -870,8 +870,8 @@
       -25.37902183103365
     ],
     "n_vertices": 4,
-    "dem_path": "5468\\dem.tif",
-    "wac_path": "5468\\wac.tif",
+    "dem_path": "5468/dem.tif",
+    "wac_path": "5468/wac.tif",
     "dem_shape": [
       69,
       82
@@ -891,8 +891,8 @@
       49.97620910851687
     ],
     "n_vertices": 3,
-    "dem_path": "566\\dem.tif",
-    "wac_path": "566\\wac.tif",
+    "dem_path": "566/dem.tif",
+    "wac_path": "566/wac.tif",
     "dem_shape": [
       63,
       71
@@ -912,8 +912,8 @@
       2.4830770639645725
     ],
     "n_vertices": 4,
-    "dem_path": "870\\dem.tif",
-    "wac_path": "870\\wac.tif",
+    "dem_path": "870/dem.tif",
+    "wac_path": "870/wac.tif",
     "dem_shape": [
       91,
       61
@@ -933,8 +933,8 @@
       43.79297474316565
     ],
     "n_vertices": 4,
-    "dem_path": "808\\dem.tif",
-    "wac_path": "808\\wac.tif",
+    "dem_path": "808/dem.tif",
+    "wac_path": "808/wac.tif",
     "dem_shape": [
       73,
       74
@@ -954,8 +954,8 @@
       30.291486003335592
     ],
     "n_vertices": 8,
-    "dem_path": "1505\\dem.tif",
-    "wac_path": "1505\\wac.tif",
+    "dem_path": "1505/dem.tif",
+    "wac_path": "1505/wac.tif",
     "dem_shape": [
       97,
       55
@@ -975,8 +975,8 @@
       -13.539922962429102
     ],
     "n_vertices": 4,
-    "dem_path": "3142\\dem.tif",
-    "wac_path": "3142\\wac.tif",
+    "dem_path": "3142/dem.tif",
+    "wac_path": "3142/wac.tif",
     "dem_shape": [
       110,
       85
@@ -996,8 +996,8 @@
       11.948373377125224
     ],
     "n_vertices": 7,
-    "dem_path": "1949\\dem.tif",
-    "wac_path": "1949\\wac.tif",
+    "dem_path": "1949/dem.tif",
+    "wac_path": "1949/wac.tif",
     "dem_shape": [
       133,
       68
@@ -1017,8 +1017,8 @@
       -50.8437035752512
     ],
     "n_vertices": 5,
-    "dem_path": "5584\\dem.tif",
-    "wac_path": "5584\\wac.tif",
+    "dem_path": "5584/dem.tif",
+    "wac_path": "5584/wac.tif",
     "dem_shape": [
       109,
       108
@@ -1038,8 +1038,8 @@
       -7.424108468419547
     ],
     "n_vertices": 7,
-    "dem_path": "2301\\dem.tif",
-    "wac_path": "2301\\wac.tif",
+    "dem_path": "2301/dem.tif",
+    "wac_path": "2301/wac.tif",
     "dem_shape": [
       166,
       103
@@ -1059,8 +1059,8 @@
       -6.836856579678226
     ],
     "n_vertices": 10,
-    "dem_path": "1461\\dem.tif",
-    "wac_path": "1461\\wac.tif",
+    "dem_path": "1461/dem.tif",
+    "wac_path": "1461/wac.tif",
     "dem_shape": [
       226,
       70
@@ -1080,8 +1080,8 @@
       3.2284098774374006
     ],
     "n_vertices": 17,
-    "dem_path": "4829\\dem.tif",
-    "wac_path": "4829\\wac.tif",
+    "dem_path": "4829/dem.tif",
+    "wac_path": "4829/wac.tif",
     "dem_shape": [
       604,
       216
@@ -1101,8 +1101,8 @@
       -5.1950507588886135
     ],
     "n_vertices": 3,
-    "dem_path": "4992\\dem.tif",
-    "wac_path": "4992\\wac.tif",
+    "dem_path": "4992/dem.tif",
+    "wac_path": "4992/wac.tif",
     "dem_shape": [
       47,
       67
@@ -1122,8 +1122,8 @@
       49.19535786942916
     ],
     "n_vertices": 4,
-    "dem_path": "568\\dem.tif",
-    "wac_path": "568\\wac.tif",
+    "dem_path": "568/dem.tif",
+    "wac_path": "568/wac.tif",
     "dem_shape": [
       59,
       141
@@ -1143,8 +1143,8 @@
       3.290746811145709
     ],
     "n_vertices": 2,
-    "dem_path": "3467\\dem.tif",
-    "wac_path": "3467\\wac.tif",
+    "dem_path": "3467/dem.tif",
+    "wac_path": "3467/wac.tif",
     "dem_shape": [
       53,
       46
@@ -1164,8 +1164,8 @@
       11.89363399081333
     ],
     "n_vertices": 3,
-    "dem_path": "5134\\dem.tif",
-    "wac_path": "5134\\wac.tif",
+    "dem_path": "5134/dem.tif",
+    "wac_path": "5134/wac.tif",
     "dem_shape": [
       67,
       57
@@ -1185,8 +1185,8 @@
       4.11620746966895
     ],
     "n_vertices": 2,
-    "dem_path": "441\\dem.tif",
-    "wac_path": "441\\wac.tif",
+    "dem_path": "441/dem.tif",
+    "wac_path": "441/wac.tif",
     "dem_shape": [
       45,
       58
@@ -1206,8 +1206,8 @@
       10.9637406297349
     ],
     "n_vertices": 3,
-    "dem_path": "5129\\dem.tif",
-    "wac_path": "5129\\wac.tif",
+    "dem_path": "5129/dem.tif",
+    "wac_path": "5129/wac.tif",
     "dem_shape": [
       66,
       48
@@ -1227,8 +1227,8 @@
       36.8747945745804
     ],
     "n_vertices": 3,
-    "dem_path": "1564\\dem.tif",
-    "wac_path": "1564\\wac.tif",
+    "dem_path": "1564/dem.tif",
+    "wac_path": "1564/wac.tif",
     "dem_shape": [
       62,
       97
@@ -1248,8 +1248,8 @@
       56.92637645420679
     ],
     "n_vertices": 4,
-    "dem_path": "4135\\dem.tif",
-    "wac_path": "4135\\wac.tif",
+    "dem_path": "4135/dem.tif",
+    "wac_path": "4135/wac.tif",
     "dem_shape": [
       69,
       87
@@ -1269,8 +1269,8 @@
       -33.313922226179045
     ],
     "n_vertices": 2,
-    "dem_path": "5555\\dem.tif",
-    "wac_path": "5555\\wac.tif",
+    "dem_path": "5555/dem.tif",
+    "wac_path": "5555/wac.tif",
     "dem_shape": [
       56,
       55
@@ -1290,8 +1290,8 @@
       -14.368234488777572
     ],
     "n_vertices": 4,
-    "dem_path": "3083\\dem.tif",
-    "wac_path": "3083\\wac.tif",
+    "dem_path": "3083/dem.tif",
+    "wac_path": "3083/wac.tif",
     "dem_shape": [
       79,
       69
@@ -1311,8 +1311,8 @@
       14.763906152671609
     ],
     "n_vertices": 4,
-    "dem_path": "2031\\dem.tif",
-    "wac_path": "2031\\wac.tif",
+    "dem_path": "2031/dem.tif",
+    "wac_path": "2031/wac.tif",
     "dem_shape": [
       84,
       61
@@ -1332,8 +1332,8 @@
       32.31753188316412
     ],
     "n_vertices": 3,
-    "dem_path": "1652\\dem.tif",
-    "wac_path": "1652\\wac.tif",
+    "dem_path": "1652/dem.tif",
+    "wac_path": "1652/wac.tif",
     "dem_shape": [
       59,
       83
@@ -1353,8 +1353,8 @@
       42.28914931952392
     ],
     "n_vertices": 3,
-    "dem_path": "823\\dem.tif",
-    "wac_path": "823\\wac.tif",
+    "dem_path": "823/dem.tif",
+    "wac_path": "823/wac.tif",
     "dem_shape": [
       60,
       77
@@ -1374,8 +1374,8 @@
       2.252269346399032
     ],
     "n_vertices": 4,
-    "dem_path": "877\\dem.tif",
-    "wac_path": "877\\wac.tif",
+    "dem_path": "877/dem.tif",
+    "wac_path": "877/wac.tif",
     "dem_shape": [
       80,
       46
@@ -1395,8 +1395,8 @@
       12.605025549263077
     ],
     "n_vertices": 2,
-    "dem_path": "2347\\dem.tif",
-    "wac_path": "2347\\wac.tif",
+    "dem_path": "2347/dem.tif",
+    "wac_path": "2347/wac.tif",
     "dem_shape": [
       58,
       43
@@ -1416,8 +1416,8 @@
       -35.687935308310735
     ],
     "n_vertices": 4,
-    "dem_path": "5613\\dem.tif",
-    "wac_path": "5613\\wac.tif",
+    "dem_path": "5613/dem.tif",
+    "wac_path": "5613/wac.tif",
     "dem_shape": [
       83,
       85
@@ -1437,8 +1437,8 @@
       -10.735649711119779
     ],
     "n_vertices": 5,
-    "dem_path": "5361\\dem.tif",
-    "wac_path": "5361\\wac.tif",
+    "dem_path": "5361/dem.tif",
+    "wac_path": "5361/wac.tif",
     "dem_shape": [
       95,
       49
@@ -1458,8 +1458,8 @@
       56.35685459166616
     ],
     "n_vertices": 5,
-    "dem_path": "4281\\dem.tif",
-    "wac_path": "4281\\wac.tif",
+    "dem_path": "4281/dem.tif",
+    "wac_path": "4281/wac.tif",
     "dem_shape": [
       51,
       179
@@ -1479,8 +1479,8 @@
       55.88796300369845
     ],
     "n_vertices": 7,
-    "dem_path": "4222\\dem.tif",
-    "wac_path": "4222\\wac.tif",
+    "dem_path": "4222/dem.tif",
+    "wac_path": "4222/wac.tif",
     "dem_shape": [
       89,
       128
@@ -1500,8 +1500,8 @@
       -18.10584037599779
     ],
     "n_vertices": 5,
-    "dem_path": "2806\\dem.tif",
-    "wac_path": "2806\\wac.tif",
+    "dem_path": "2806/dem.tif",
+    "wac_path": "2806/wac.tif",
     "dem_shape": [
       90,
       71
@@ -1521,8 +1521,8 @@
       2.0944086655617866
     ],
     "n_vertices": 7,
-    "dem_path": "280\\dem.tif",
-    "wac_path": "280\\wac.tif",
+    "dem_path": "280/dem.tif",
+    "wac_path": "280/wac.tif",
     "dem_shape": [
       71,
       101
@@ -1542,8 +1542,8 @@
       13.113767659382859
     ],
     "n_vertices": 4,
-    "dem_path": "2343\\dem.tif",
-    "wac_path": "2343\\wac.tif",
+    "dem_path": "2343/dem.tif",
+    "wac_path": "2343/wac.tif",
     "dem_shape": [
       63,
       98
@@ -1563,8 +1563,8 @@
       -13.362003253216358
     ],
     "n_vertices": 5,
-    "dem_path": "3163\\dem.tif",
-    "wac_path": "3163\\wac.tif",
+    "dem_path": "3163/dem.tif",
+    "wac_path": "3163/wac.tif",
     "dem_shape": [
       96,
       88
@@ -1584,8 +1584,8 @@
       35.05402955461051
     ],
     "n_vertices": 6,
-    "dem_path": "3406\\dem.tif",
-    "wac_path": "3406\\wac.tif",
+    "dem_path": "3406/dem.tif",
+    "wac_path": "3406/wac.tif",
     "dem_shape": [
       119,
       66
@@ -1605,8 +1605,8 @@
       49.35794669153544
     ],
     "n_vertices": 12,
-    "dem_path": "4580\\dem.tif",
-    "wac_path": "4580\\wac.tif",
+    "dem_path": "4580/dem.tif",
+    "wac_path": "4580/wac.tif",
     "dem_shape": [
       118,
       135
@@ -1626,8 +1626,8 @@
       1.645640836090867
     ],
     "n_vertices": 4,
-    "dem_path": "5956\\dem.tif",
-    "wac_path": "5956\\wac.tif",
+    "dem_path": "5956/dem.tif",
+    "wac_path": "5956/wac.tif",
     "dem_shape": [
       118,
       56
@@ -1647,8 +1647,8 @@
       -15.315061436127337
     ],
     "n_vertices": 6,
-    "dem_path": "3239\\dem.tif",
-    "wac_path": "3239\\wac.tif",
+    "dem_path": "3239/dem.tif",
+    "wac_path": "3239/wac.tif",
     "dem_shape": [
       115,
       52
@@ -1668,8 +1668,8 @@
       47.72117577315226
     ],
     "n_vertices": 8,
-    "dem_path": "3802\\dem.tif",
-    "wac_path": "3802\\wac.tif",
+    "dem_path": "3802/dem.tif",
+    "wac_path": "3802/wac.tif",
     "dem_shape": [
       100,
       160
@@ -1689,8 +1689,8 @@
       -24.22705398626198
     ],
     "n_vertices": 7,
-    "dem_path": "3960\\dem.tif",
-    "wac_path": "3960\\wac.tif",
+    "dem_path": "3960/dem.tif",
+    "wac_path": "3960/wac.tif",
     "dem_shape": [
       135,
       50
@@ -1710,8 +1710,8 @@
       15.071903888320094
     ],
     "n_vertices": 10,
-    "dem_path": "3340\\dem.tif",
-    "wac_path": "3340\\wac.tif",
+    "dem_path": "3340/dem.tif",
+    "wac_path": "3340/wac.tif",
     "dem_shape": [
       116,
       92
@@ -1731,8 +1731,8 @@
       21.993854398543533
     ],
     "n_vertices": 5,
-    "dem_path": "3635\\dem.tif",
-    "wac_path": "3635\\wac.tif",
+    "dem_path": "3635/dem.tif",
+    "wac_path": "3635/wac.tif",
     "dem_shape": [
       104,
       117
@@ -1752,8 +1752,8 @@
       7.812067120780228
     ],
     "n_vertices": 6,
-    "dem_path": "363\\dem.tif",
-    "wac_path": "363\\wac.tif",
+    "dem_path": "363/dem.tif",
+    "wac_path": "363/wac.tif",
     "dem_shape": [
       120,
       51
@@ -1773,8 +1773,8 @@
       58.35206813398781
     ],
     "n_vertices": 7,
-    "dem_path": "4423\\dem.tif",
-    "wac_path": "4423\\wac.tif",
+    "dem_path": "4423/dem.tif",
+    "wac_path": "4423/wac.tif",
     "dem_shape": [
       129,
       116
@@ -1794,8 +1794,8 @@
       18.421106024290342
     ],
     "n_vertices": 7,
-    "dem_path": "1477\\dem.tif",
-    "wac_path": "1477\\wac.tif",
+    "dem_path": "1477/dem.tif",
+    "wac_path": "1477/wac.tif",
     "dem_shape": [
       100,
       118
@@ -1815,8 +1815,8 @@
       -1.6796336687457938
     ],
     "n_vertices": 5,
-    "dem_path": "2440\\dem.tif",
-    "wac_path": "2440\\wac.tif",
+    "dem_path": "2440/dem.tif",
+    "wac_path": "2440/wac.tif",
     "dem_shape": [
       92,
       141
@@ -1836,8 +1836,8 @@
       53.427034181411386
     ],
     "n_vertices": 7,
-    "dem_path": "4565\\dem.tif",
-    "wac_path": "4565\\wac.tif",
+    "dem_path": "4565/dem.tif",
+    "wac_path": "4565/wac.tif",
     "dem_shape": [
       136,
       131
@@ -1857,8 +1857,8 @@
       -26.114847973274266
     ],
     "n_vertices": 8,
-    "dem_path": "3975\\dem.tif",
-    "wac_path": "3975\\wac.tif",
+    "dem_path": "3975/dem.tif",
+    "wac_path": "3975/wac.tif",
     "dem_shape": [
       61,
       196
@@ -1878,8 +1878,8 @@
       9.642173133554593
     ],
     "n_vertices": 8,
-    "dem_path": "1404\\dem.tif",
-    "wac_path": "1404\\wac.tif",
+    "dem_path": "1404/dem.tif",
+    "wac_path": "1404/wac.tif",
     "dem_shape": [
       127,
       139
@@ -1899,8 +1899,8 @@
       25.541778461964334
     ],
     "n_vertices": 8,
-    "dem_path": "1834\\dem.tif",
-    "wac_path": "1834\\wac.tif",
+    "dem_path": "1834/dem.tif",
+    "wac_path": "1834/wac.tif",
     "dem_shape": [
       139,
       67
@@ -1920,8 +1920,8 @@
       22.450583725991134
     ],
     "n_vertices": 7,
-    "dem_path": "1802\\dem.tif",
-    "wac_path": "1802\\wac.tif",
+    "dem_path": "1802/dem.tif",
+    "wac_path": "1802/wac.tif",
     "dem_shape": [
       125,
       106
@@ -1941,8 +1941,8 @@
       13.994622966136887
     ],
     "n_vertices": 7,
-    "dem_path": "179\\dem.tif",
-    "wac_path": "179\\wac.tif",
+    "dem_path": "179/dem.tif",
+    "wac_path": "179/wac.tif",
     "dem_shape": [
       126,
       130
@@ -1962,8 +1962,8 @@
       -55.13689234717481
     ],
     "n_vertices": 8,
-    "dem_path": "5572\\dem.tif",
-    "wac_path": "5572\\wac.tif",
+    "dem_path": "5572/dem.tif",
+    "wac_path": "5572/wac.tif",
     "dem_shape": [
       76,
       231
@@ -1983,8 +1983,8 @@
       6.047230580149858
     ],
     "n_vertices": 7,
-    "dem_path": "1383\\dem.tif",
-    "wac_path": "1383\\wac.tif",
+    "dem_path": "1383/dem.tif",
+    "wac_path": "1383/wac.tif",
     "dem_shape": [
       159,
       74
@@ -2004,8 +2004,8 @@
       -12.0108044688231
     ],
     "n_vertices": 10,
-    "dem_path": "1126\\dem.tif",
-    "wac_path": "1126\\wac.tif",
+    "dem_path": "1126/dem.tif",
+    "wac_path": "1126/wac.tif",
     "dem_shape": [
       169,
       113
@@ -2025,8 +2025,8 @@
       10.41813055560482
     ],
     "n_vertices": 5,
-    "dem_path": "1408\\dem.tif",
-    "wac_path": "1408\\wac.tif",
+    "dem_path": "1408/dem.tif",
+    "wac_path": "1408/wac.tif",
     "dem_shape": [
       150,
       119
@@ -2046,8 +2046,8 @@
       0.4876571903147919
     ],
     "n_vertices": 9,
-    "dem_path": "1433\\dem.tif",
-    "wac_path": "1433\\wac.tif",
+    "dem_path": "1433/dem.tif",
+    "wac_path": "1433/wac.tif",
     "dem_shape": [
       140,
       64
@@ -2067,8 +2067,8 @@
       -21.949738121703092
     ],
     "n_vertices": 10,
-    "dem_path": "3994\\dem.tif",
-    "wac_path": "3994\\wac.tif",
+    "dem_path": "3994/dem.tif",
+    "wac_path": "3994/wac.tif",
     "dem_shape": [
       164,
       82
@@ -2088,8 +2088,8 @@
       57.021343257532806
     ],
     "n_vertices": 14,
-    "dem_path": "4779\\dem.tif",
-    "wac_path": "4779\\wac.tif",
+    "dem_path": "4779/dem.tif",
+    "wac_path": "4779/wac.tif",
     "dem_shape": [
       73,
       413
@@ -2109,8 +2109,8 @@
       52.96795027433829
     ],
     "n_vertices": 8,
-    "dem_path": "4564\\dem.tif",
-    "wac_path": "4564\\wac.tif",
+    "dem_path": "4564/dem.tif",
+    "wac_path": "4564/wac.tif",
     "dem_shape": [
       149,
       157
@@ -2130,8 +2130,8 @@
       22.77363200716243
     ],
     "n_vertices": 7,
-    "dem_path": "2725\\dem.tif",
-    "wac_path": "2725\\wac.tif",
+    "dem_path": "2725/dem.tif",
+    "wac_path": "2725/wac.tif",
     "dem_shape": [
       81,
       280
@@ -2151,8 +2151,8 @@
       -3.32001443462819
     ],
     "n_vertices": 10,
-    "dem_path": "2765\\dem.tif",
-    "wac_path": "2765\\wac.tif",
+    "dem_path": "2765/dem.tif",
+    "wac_path": "2765/wac.tif",
     "dem_shape": [
       191,
       87
@@ -2172,8 +2172,8 @@
       -6.328251818603346
     ],
     "n_vertices": 14,
-    "dem_path": "3173\\dem.tif",
-    "wac_path": "3173\\wac.tif",
+    "dem_path": "3173/dem.tif",
+    "wac_path": "3173/wac.tif",
     "dem_shape": [
       175,
       69
@@ -2193,8 +2193,8 @@
       7.1035078759509265
     ],
     "n_vertices": 9,
-    "dem_path": "3439\\dem.tif",
-    "wac_path": "3439\\wac.tif",
+    "dem_path": "3439/dem.tif",
+    "wac_path": "3439/wac.tif",
     "dem_shape": [
       160,
       83
@@ -2214,8 +2214,8 @@
       44.598742783914574
     ],
     "n_vertices": 22,
-    "dem_path": "5883\\dem.tif",
-    "wac_path": "5883\\wac.tif",
+    "dem_path": "5883/dem.tif",
+    "wac_path": "5883/wac.tif",
     "dem_shape": [
       153,
       211
@@ -2235,8 +2235,8 @@
       31.49008946622007
     ],
     "n_vertices": 18,
-    "dem_path": "2694\\dem.tif",
-    "wac_path": "2694\\wac.tif",
+    "dem_path": "2694/dem.tif",
+    "wac_path": "2694/wac.tif",
     "dem_shape": [
       265,
       562
@@ -2256,8 +2256,8 @@
       -25.63134042624364
     ],
     "n_vertices": 12,
-    "dem_path": "2864\\dem.tif",
-    "wac_path": "2864\\wac.tif",
+    "dem_path": "2864/dem.tif",
+    "wac_path": "2864/wac.tif",
     "dem_shape": [
       286,
       158
@@ -2277,8 +2277,8 @@
       7.072567868640194
     ],
     "n_vertices": 8,
-    "dem_path": "2056\\dem.tif",
-    "wac_path": "2056\\wac.tif",
+    "dem_path": "2056/dem.tif",
+    "wac_path": "2056/wac.tif",
     "dem_shape": [
       154,
       190
@@ -2298,8 +2298,8 @@
       34.04090410246852
     ],
     "n_vertices": 21,
-    "dem_path": "3929\\dem.tif",
-    "wac_path": "3929\\wac.tif",
+    "dem_path": "3929/dem.tif",
+    "wac_path": "3929/wac.tif",
     "dem_shape": [
       395,
       214
@@ -2319,8 +2319,8 @@
       28.73000001847464
     ],
     "n_vertices": 13,
-    "dem_path": "3711\\dem.tif",
-    "wac_path": "3711\\wac.tif",
+    "dem_path": "3711/dem.tif",
+    "wac_path": "3711/wac.tif",
     "dem_shape": [
       278,
       121
@@ -2340,8 +2340,8 @@
       29.35600550659899
     ],
     "n_vertices": 21,
-    "dem_path": "3649\\dem.tif",
-    "wac_path": "3649\\wac.tif",
+    "dem_path": "3649/dem.tif",
+    "wac_path": "3649/wac.tif",
     "dem_shape": [
       309,
       748
@@ -2361,8 +2361,8 @@
       32.6759395198099
     ],
     "n_vertices": 10,
-    "dem_path": "3746\\dem.tif",
-    "wac_path": "3746\\wac.tif",
+    "dem_path": "3746/dem.tif",
+    "wac_path": "3746/wac.tif",
     "dem_shape": [
       202,
       181
@@ -2382,8 +2382,8 @@
       25.098986723582282
     ],
     "n_vertices": 15,
-    "dem_path": "1838\\dem.tif",
-    "wac_path": "1838\\wac.tif",
+    "dem_path": "1838/dem.tif",
+    "wac_path": "1838/wac.tif",
     "dem_shape": [
       357,
       234
@@ -2403,8 +2403,8 @@
       38.54903852026562
     ],
     "n_vertices": 10,
-    "dem_path": "3423\\dem.tif",
-    "wac_path": "3423\\wac.tif",
+    "dem_path": "3423/dem.tif",
+    "wac_path": "3423/wac.tif",
     "dem_shape": [
       424,
       129
@@ -2424,8 +2424,8 @@
       -11.442398290525091
     ],
     "n_vertices": 23,
-    "dem_path": "3253\\dem.tif",
-    "wac_path": "3253\\wac.tif",
+    "dem_path": "3253/dem.tif",
+    "wac_path": "3253/wac.tif",
     "dem_shape": [
       365,
       267
@@ -2445,8 +2445,8 @@
       -9.946822800169448
     ],
     "n_vertices": 30,
-    "dem_path": "1085\\dem.tif",
-    "wac_path": "1085\\wac.tif",
+    "dem_path": "1085/dem.tif",
+    "wac_path": "1085/wac.tif",
     "dem_shape": [
       551,
       917
@@ -2466,8 +2466,8 @@
       -21.178090217547258
     ],
     "n_vertices": 28,
-    "dem_path": "3945\\dem.tif",
-    "wac_path": "3945\\wac.tif",
+    "dem_path": "3945/dem.tif",
+    "wac_path": "3945/wac.tif",
     "dem_shape": [
       522,
       109
@@ -2487,8 +2487,8 @@
       30.172758155560135
     ],
     "n_vertices": 33,
-    "dem_path": "2717\\dem.tif",
-    "wac_path": "2717\\wac.tif",
+    "dem_path": "2717/dem.tif",
+    "wac_path": "2717/wac.tif",
     "dem_shape": [
       897,
       352
@@ -2508,8 +2508,8 @@
       16.320435053796988
     ],
     "n_vertices": 18,
-    "dem_path": "5292\\dem.tif",
-    "wac_path": "5292\\wac.tif",
+    "dem_path": "5292/dem.tif",
+    "wac_path": "5292/wac.tif",
     "dem_shape": [
       910,
       952

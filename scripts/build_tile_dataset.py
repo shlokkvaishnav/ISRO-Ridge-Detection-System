@@ -154,8 +154,15 @@ def main() -> None:
             "length_km": seg.length_km,
             "bbox": seg.bbox,
             "n_vertices": len(seg.points),
-            "dem_path": os.path.relpath(dem_path, TILES_DIR),
-            "wac_path": os.path.relpath(wac_path, TILES_DIR),
+            # Forward slashes explicitly, not os.path.relpath: this manifest
+            # is read on Linux (Kaggle, for Arm C training) as well as this
+            # Windows dev machine. os.path.relpath produces backslash-
+            # separated paths on Windows, which Linux does not treat as a
+            # directory separator -- it silently becomes part of the
+            # filename instead, and a training run failed on exactly this
+            # (rasterio.errors.RasterioIOError, "No such file or directory").
+            "dem_path": f"{seg.id}/dem.tif",
+            "wac_path": f"{seg.id}/wac.tif",
             "dem_shape": list(tiles["dem"].shape),
             "wac_shape": list(tiles["wac"].shape),
         }
