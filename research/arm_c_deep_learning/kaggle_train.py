@@ -14,13 +14,20 @@ import subprocess
 import sys
 
 REPO_URL = "https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System.git"
+REPO_BRANCH = "research/arm-c-deep-learning"  # NOT master -- this code hasn't
+# been reviewed/merged yet (research/GIT_WORKFLOW.md's full spec -> PR ->
+# review -> manual-merge path). A plain clone would silently pull master and
+# miss every file this script needs; must pin the branch explicitly.
 REPO_DIR = "/kaggle/working/repo"
 DATASET_DIR = "/kaggle/input/isro-ridge-tiles"
 
 subprocess.run(["pip", "install", "-q", "pyshp"], check=True)
 
 if not os.path.exists(REPO_DIR):
-    subprocess.run(["git", "clone", "--depth", "1", REPO_URL, REPO_DIR], check=True)
+    subprocess.run(
+        ["git", "clone", "--depth", "1", "--branch", REPO_BRANCH, REPO_URL, REPO_DIR],
+        check=True,
+    )
 
 sys.path.insert(0, REPO_DIR)
 os.chdir(REPO_DIR)
