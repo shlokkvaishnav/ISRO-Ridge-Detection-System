@@ -8,9 +8,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from typing import Optional, Sequence
 
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Subset, random_split
 
 from src.deep.dataset import RidgeTileDataset
 from src.deep.model import DualBranchRidgeNet
@@ -26,16 +27,35 @@ def train(
     lr: float = 1e-3,
     val_fraction: float = 0.2,
     seed: int = 0,
+    holdout_ids: Optional[Sequence[int]] = None,
 ) -> dict:
+    """holdout_ids: if given, these tile ids are excluded from training and
+    used as the *entire* validation set (val_fraction is ignored), instead
+    of a random split. Needed for a fair three-way arm comparison: Arm A/B
+    were evaluated on a specific 6-tile set (research/DECISION_LOG.md), and
+    a random split could put some of those tiles in Arm C's training set,
+    which would make comparing recall on them meaningless."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
     dataset = RidgeTileDataset(manifest_path, tiles_dir, shp_path)
-    n_val = max(int(len(dataset) * val_fraction), 1)
-    n_train = len(dataset) - n_val
-    generator = torch.Generator().manual_seed(seed)
-    train_set, val_set = random_split(dataset, [n_train, n_val], generator=generator)
-    print(f"Dataset: {len(dataset)} tiles ({n_train} train / {n_val} val)")
+
+    if holdout_ids:
+        holdout_set = set(holdout_ids)
+        train_indices = [i for i, e in enumerate(dataset.manifest) if e["id"] not in holdout_set]
+        val_indices = [i for i, e in enumerate(dataset.manifest) if e["id"] in holdout_set]
+        missing = holdout_set - {dataset.manifest[i]["id"] for i in val_indices}
+        if missing:
+            raise ValueError(f"holdout_ids not found in manifest: {missing}")
+        train_set = Subset(dataset, train_indices)
+        val_set = Subset(dataset, val_indices)
+        print(f"Dataset: {len(dataset)} tiles ({len(train_set)} train / {len(val_set)} held out by id)")
+    else:
+        n_val = max(int(len(dataset) * val_fraction), 1)
+        n_train = len(dataset) - n_val
+        generator = torch.Generator().manual_seed(seed)
+        train_set, val_set = random_split(dataset, [n_train, n_val], generator=generator)
+        print(f"Dataset: {len(dataset)} tiles ({n_train} train / {n_val} val, random split)")
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)

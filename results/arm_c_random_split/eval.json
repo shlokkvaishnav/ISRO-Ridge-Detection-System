@@ -1,0 +1,151 @@
+{
+  "recall": 0.6515151515151515,
+  "recall_frac": "129/198",
+  "coverage_pct": 25.555588602700613,
+  "per_tile": [
+    {
+      "id": 2717,
+      "hits": 5,
+      "truth": 33,
+      "coverage_pct": 10.059731934731936
+    },
+    {
+      "id": 1199,
+      "hits": 2,
+      "truth": 5,
+      "coverage_pct": 25.222726060282742
+    },
+    {
+      "id": 1838,
+      "hits": 1,
+      "truth": 15,
+      "coverage_pct": 17.856544327132564
+    },
+    {
+      "id": 3975,
+      "hits": 6,
+      "truth": 8,
+      "coverage_pct": 40.50685848109736
+    },
+    {
+      "id": 2440,
+      "hits": 4,
+      "truth": 5,
+      "coverage_pct": 42.3604687018193
+    },
+    {
+      "id": 2545,
+      "hits": 8,
+      "truth": 10,
+      "coverage_pct": 51.099979963935084
+    },
+    {
+      "id": 748,
+      "hits": 4,
+      "truth": 8,
+      "coverage_pct": 34.87980769230769
+    },
+    {
+      "id": 4032,
+      "hits": 4,
+      "truth": 5,
+      "coverage_pct": 54.80295566502463
+    },
+    {
+      "id": 1477,
+      "hits": 7,
+      "truth": 7,
+      "coverage_pct": 52.847457627118644
+    },
+    {
+      "id": 1949,
+      "hits": 7,
+      "truth": 7,
+      "coverage_pct": 62.914639540026535
+    },
+    {
+      "id": 3112,
+      "hits": 6,
+      "truth": 7,
+      "coverage_pct": 60.041382667964946
+    },
+    {
+      "id": 4865,
+      "hits": 6,
+      "truth": 6,
+      "coverage_pct": 41.52298850574713
+    },
+    {
+      "id": 4992,
+      "hits": 3,
+      "truth": 3,
+      "coverage_pct": 65.60812956494125
+    },
+    {
+      "id": 2864,
+      "hits": 11,
+      "truth": 12,
+      "coverage_pct": 42.77241745596176
+    },
+    {
+      "id": 877,
+      "hits": 4,
+      "truth": 4,
+      "coverage_pct": 62.58152173913044
+    },
+    {
+      "id": 4896,
+      "hits": 6,
+      "truth": 6,
+      "coverage_pct": 66.61442006269593
+    },
+    {
+      "id": 823,
+      "hits": 3,
+      "truth": 3,
+      "coverage_pct": 49.32900432900433
+    },
+    {
+      "id": 634,
+      "hits": 3,
+      "truth": 5,
+      "coverage_pct": 43.8674737177445
+    },
+    {
+      "id": 1126,
+      "hits": 9,
+      "truth": 10,
+      "coverage_pct": 57.41739540241923
+    },
+    {
+      "id": 1652,
+      "hits": 2,
+      "truth": 3,
+      "coverage_pct": 54.80906677557688
+    },
+    {
+      "id": 2725,
+      "hits": 4,
+      "truth": 7,
+      "coverage_pct": 25.42768959435626
+    },
+    {
+      "id": 3173,
+      "hits": 12,
+      "truth": 14,
+      "coverage_pct": 47.908902691511386
+    },
+    {
+      "id": 3163,
+      "hits": 4,
+      "truth": 5,
+      "coverage_pct": 44.187973484848484
+    },
+    {
+      "id": 3994,
+      "hits": 8,
+      "truth": 10,
+      "coverage_pct": 57.07911957168352
+    }
+  ]
+}

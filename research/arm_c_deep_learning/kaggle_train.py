@@ -66,6 +66,12 @@ TILES_DIR = DATASET_DIR
 SHP = os.path.join(DATASET_DIR, "shapefile", "WRINKLE_RIDGES_180.SHP")
 OUT_DIR = "/kaggle/working/arm_c"
 
+# The exact 6 tiles Arm A/B were compared on (research/DECISION_LOG.md,
+# 2026-09-22 entries) -- held out from training entirely, not just from a
+# random split, so Arm C's number on them is a fair three-way comparison
+# rather than partly evaluating on tiles it was trained on.
+BENCHMARK_HOLDOUT_IDS = [3674, 1851, 748, 5017, 4098, 3461]
+
 result = train(
     manifest_path=MANIFEST,
     tiles_dir=TILES_DIR,
@@ -74,6 +80,7 @@ result = train(
     epochs=60,
     batch_size=8,
     lr=1e-3,
+    holdout_ids=BENCHMARK_HOLDOUT_IDS,
 )
 
 eval_result = evaluate(
