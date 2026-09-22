@@ -16,8 +16,8 @@ filtering, and deep learning agree on which lunar wrinkle ridges exist on real t
 does each have a characteristic blind spot the others don't share?
 
 **Scope.** LROC WAC + GLD100 (100m/px), Thompson et al. 2017 catalog (5,999 segments),
-initial 30-tile stratified-by-length pilot. Chandrayaan-2 TMC-2 planned as a cross-instrument
-check, not yet run.
+120-tile stratified-by-length pilot (grown from an initial 30). Chandrayaan-2 TMC-2 planned
+as a cross-instrument check, not yet run.
 
 Full contract and current findings: see the top-level [`README.md`](../README.md#status).
 Prior-art positioning and what NOT to claim because someone else already owns it:
@@ -34,7 +34,7 @@ Prior-art positioning and what NOT to claim because someone else already owns it
 | Arm A vs Arm B head-to-head on real tiles | See `DECISION_LOG.md`, 2026-09-22 | Confirmatory (exploratory framing) | Closed — close, no clear winner. Arm B (frangi) 43.9% aggregate recall vs Arm A 40.4%, per-tile wins split evenly, both in the same 28-40% mask-coverage range |
 | Do Arm A and Arm B catch the same true-ridge vertices? | See `DECISION_LOG.md`, 2026-09-22 | Analysis (zero new tile extraction — reused existing masks) | Closed — no, genuinely complementary (both hit 12, A-only 11, B-only 13, neither 21 of 57). Union recall 63.2%, but mask coverage rises proportionally (~48-58%) — not a free ensemble win |
 | Does NMS + hysteresis thresholding beat shape-filtering? | [`nms_hysteresis_threshold/`](nms_hysteresis_threshold/) | Method (pre-registered, [#1](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/1)) | **Merged** ([PR #2](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/pull/2)) as an additional option, not a new default. Mixed result, not a clean win: aggregate looks better (42.1% vs 40.4% recall, 30.8% vs 33.2% coverage) but driven substantially by one tile, two others get strictly worse. Coverage consistently at-or-below baseline on every tile. `detect_ridges` (shape-filter) remains the default arm |
-| Arm C (deep learning) | — | — | Not started |
+| Arm C (DBR-Net-inspired dual-branch DEM+aspect CNN) | [`arm_c_deep_learning/`](arm_c_deep_learning/) | Research (pre-registered, [#3](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/3)) | **In progress** — first result: 40/57 (70.2%) recall at 30.8% coverage on the Arm A/B benchmark, beating both classical arms, trained on Kaggle GPU with the 6 benchmark tiles held out of training entirely. Real unresolved confound: training history shows overfitting past epoch ~4-10, no early stopping used. Not yet closed pending the early-stopping follow-up |
 | Chandrayaan-2 TMC-2 cross-instrument check | — | — | Not started — blocked on PRADAN authenticated access, see `DECISION_LOG.md` |
 
 **Confirmatory** means the question and comparison design were fixed before the relevant run.

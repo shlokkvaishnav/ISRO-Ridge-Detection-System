@@ -2,6 +2,55 @@
 
 Newest first.
 
+## 2026-09-22 — Arm C (DBR-Net-inspired) beats both classical arms on the benchmark, with a real overfitting confound attached
+
+Full numbers, per-tile breakdown, and the training-infrastructure incidents en route:
+`research/arm_c_deep_learning/SPEC.md`. Trained on Kaggle's GPU (this machine has no
+discrete GPU), a dual-branch DEM+aspect CNN with ACFF fusion, deliberately smaller than
+DBR-Net's ResNet-34-per-branch design, on 114 of the 120 pilot tiles with the exact 6
+Arm A/B benchmark tiles held out of training entirely (not just a random split, which
+the first run used and which put 5 of those 6 tiles in the training set -- caught before
+being reported as the headline number).
+
+**ESTABLISHED**
+> On the same 6-tile, 57-vertex benchmark used throughout the Arm A/B comparison: Arm C
+> gets 40/57 (70.2%) recall at 30.8% mask coverage, vs Arm A's 23/57 (40.4%)/33.2% and Arm
+> B's 25/57 (43.9%). Arithmetic independently reverified from the per-tile breakdown. The
+> evaluation metric has no leakage into training (it scores against the real catalog
+> polylines directly; training used weak polyline-buffer labels, a different signal).
+
+**Real, unresolved confound**
+> Training history shows clear overfitting: validation loss (on the held-out 6 tiles)
+> bottoms out at epoch 4 (0.545) then rises to 1.1-3.3 by epoch 60 while train loss keeps
+> falling. No early stopping was used; only the final (epoch 60) checkpoint was saved, so
+> the loss-optimal epoch's recall/coverage is unknown and can't be recovered without
+> retraining. Coverage staying at a reasonable 30.8% (not saturating toward marking
+> everything positive) argues against the crudest overfitting failure mode, but this is
+> inference, not a test -- a genuinely independent check (early stopping, or a second seed)
+> hasn't been run.
+
+**HYPOTHESIS**
+> That this result would hold (similarly or better) at the loss-optimal checkpoint rather
+> than the overfit final one -- untested, flagged as the most direct next check.
+>
+> That weak polyline-buffer supervision is sufficient for this architecture family at this
+> data scale, given it beat two classical arms despite ~9x less training data than DBR-Net
+> used with real hand-labeled masks. Plausible given the result, not confirmed independent
+> of the overfitting confound above.
+
+**OPEN**
+> Whether the result is stable across seeds/reruns -- single run only, no variance
+> reported, unlike the classical arms' deterministic 6-tile numbers.
+> Whether a per-morphology-class/degradation-bucket breakdown (per `plan.md`'s original
+> comparison methodology) shows Arm C winning uniformly or concentrated in specific ridge
+> types -- only aggregate + per-tile numbers computed so far, not per-class.
+
+**DO NOT CLAIM**
+> That Arm C is a validated, production-ready detector, or that this recall number is
+> guaranteed to reproduce on a rerun. The overfitting confound above is real and
+> unresolved; "beats the classical arms in this run" is the supported claim, not "is a
+> better detector" unqualified.
+
 ## 2026-09-22 — Arm A and Arm B are complementary, but the union isn't free
 
 Follow-up to the head-to-head entry below, answering its own OPEN item: do Arm A and Arm B

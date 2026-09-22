@@ -9,4 +9,7 @@ data/*.img
 data/tiles/*/
 *.ipynb_checkpoints
 .DS_Store
-results/
+results/*
+!results/arm_c_random_split/
+!results/arm_c/
+staging/
