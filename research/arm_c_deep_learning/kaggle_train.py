@@ -19,7 +19,7 @@ REPO_BRANCH = "research/arm-c-deep-learning"  # NOT master -- this code hasn't
 # review -> manual-merge path). A plain clone would silently pull master and
 # miss every file this script needs; must pin the branch explicitly.
 REPO_DIR = "/kaggle/working/repo"
-DATASET_DIR = "/kaggle/input/isro-ridge-tiles"
+DATASET_SLUG = "isro-ridge-tiles"
 
 subprocess.run(["pip", "install", "-q", "pyshp"], check=True)
 
@@ -35,33 +35,36 @@ os.chdir(REPO_DIR)
 from src.deep.train import train  # noqa: E402
 from src.deep.evaluate import evaluate  # noqa: E402
 
+
+def find_dataset_dir(slug: str) -> str:
+    """Locate the mounted dataset directory by walking /kaggle/input for a
+    directory containing manifest.json, rather than assuming a fixed mount
+    path. Three prior runs each hit a different mount-path assumption
+    failure -- the classic /kaggle/input/<slug>/ layout, a dataset-still-
+    processing timing issue, and (the actual cause, confirmed here) a newer
+    Kaggle layout that nests datasets under /kaggle/input/datasets/<owner>/
+    <slug>/ instead. Searching directly is more robust than hardcoding
+    whichever layout happened to be observed most recently.
+    """
+    for root, dirs, files in os.walk("/kaggle/input"):
+        if "manifest.json" in files and slug in root:
+            return root
+    raise FileNotFoundError(
+        f"No directory containing manifest.json found under /kaggle/input "
+        f"with '{slug}' in its path. /kaggle/input tree: "
+        + "\n".join(
+            os.path.join(r, d) for r, dirs, _ in os.walk("/kaggle/input") for d in dirs
+        )
+    )
+
+
+DATASET_DIR = find_dataset_dir(DATASET_SLUG)
+print(f"Found dataset at: {DATASET_DIR}")
+
 MANIFEST = os.path.join(DATASET_DIR, "manifest.json")
 TILES_DIR = DATASET_DIR
 SHP = os.path.join(DATASET_DIR, "shapefile", "WRINKLE_RIDGES_180.SHP")
 OUT_DIR = "/kaggle/working/arm_c"
-
-# Diagnostics printed unconditionally, not just on failure: two prior runs
-# each hit a different mount-path failure (one where DATASET_DIR existed but
-# manifest.json didn't -- likely a dataset-processing timing issue; one
-# where DATASET_DIR itself didn't exist at all, despite server-side kernel
-# metadata confirming the dataset was attached -- cause still unclear).
-# Print what /kaggle/input actually contains rather than assuming the exact
-# subfolder name matches the dataset slug, so a naming mismatch (rather than
-# a missing/unready dataset) is immediately visible in the log next time.
-print(f"/kaggle/input contents: {sorted(os.listdir('/kaggle/input')) if os.path.exists('/kaggle/input') else 'DOES NOT EXIST'}")
-if os.path.exists(DATASET_DIR):
-    print(f"Contents of {DATASET_DIR}: {sorted(os.listdir(DATASET_DIR))}")
-
-if not os.path.exists(MANIFEST):
-    raise FileNotFoundError(
-        f"{MANIFEST} not found. /kaggle/input contents: "
-        f"{sorted(os.listdir('/kaggle/input')) if os.path.exists('/kaggle/input') else '/kaggle/input missing entirely'}. "
-        "If DATASET_DIR's name doesn't match what's listed above, fix "
-        "DATASET_DIR in this script. If nothing is listed at all, the "
-        "dataset may not be attached/ready -- check "
-        "https://www.kaggle.com/datasets/shlokkvaishnav/isro-ridge-tiles "
-        "shows a completed version before re-running."
-    )
 
 result = train(
     manifest_path=MANIFEST,
