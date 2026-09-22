@@ -6,6 +6,7 @@ venv/
 data/raw/
 data/*.tif
 data/*.img
+data/tiles/*/
 *.ipynb_checkpoints
 .DS_Store
 results/

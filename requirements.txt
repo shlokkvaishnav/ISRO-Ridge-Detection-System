@@ -5,3 +5,6 @@ opencv-python
 rasterio
 matplotlib
 pytest
+requests
+pyshp
+python-dotenv
