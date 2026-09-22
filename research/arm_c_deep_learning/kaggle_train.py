@@ -14,10 +14,13 @@ import subprocess
 import sys
 
 REPO_URL = "https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System.git"
-REPO_BRANCH = "research/arm-c-deep-learning"  # NOT master -- this code hasn't
-# been reviewed/merged yet (research/GIT_WORKFLOW.md's full spec -> PR ->
-# review -> manual-merge path). A plain clone would silently pull master and
-# miss every file this script needs; must pin the branch explicitly.
+REPO_BRANCH = "experiment/arm-c-early-stopping"  # NOT master -- this code
+# hasn't been reviewed/merged yet (research/GIT_WORKFLOW.md's full spec ->
+# PR -> review -> manual-merge path). A plain clone would silently pull
+# master and miss every file this script needs; must pin the branch
+# explicitly. (Updated from research/arm-c-deep-learning, which merged and
+# was deleted -- this file lives on whichever branch is currently active,
+# so it must always point at itself, not a fixed historical branch name.)
 REPO_DIR = "/kaggle/working/repo"
 DATASET_SLUG = "isro-ridge-tiles"
 
@@ -83,18 +86,30 @@ result = train(
     holdout_ids=BENCHMARK_HOLDOUT_IDS,
 )
 
-eval_result = evaluate(
+import json  # noqa: E402
+
+eval_final = evaluate(
     model_path=os.path.join(OUT_DIR, "model.pt"),
     manifest_path=MANIFEST,
     tiles_dir=TILES_DIR,
     shp_path=SHP,
     tile_ids=result["val_ids"],
 )
-
-import json  # noqa: E402
-
 with open(os.path.join(OUT_DIR, "eval.json"), "w") as f:
-    json.dump(eval_result, f, indent=2)
+    json.dump(eval_final, f, indent=2)
+print(f"FINAL checkpoint (epoch 60)  -- Recall: {eval_final['recall_frac']} ({100*eval_final['recall']:.1f}%)  Coverage: {eval_final['coverage_pct']:.1f}%")
 
-print(f"Recall: {eval_result['recall_frac']} ({100*eval_result['recall']:.1f}%)")
-print(f"Coverage: {eval_result['coverage_pct']:.1f}%")
+best_model_path = os.path.join(OUT_DIR, "model_best.pt")
+if os.path.exists(best_model_path):
+    eval_best = evaluate(
+        model_path=best_model_path,
+        manifest_path=MANIFEST,
+        tiles_dir=TILES_DIR,
+        shp_path=SHP,
+        tile_ids=result["val_ids"],
+    )
+    with open(os.path.join(OUT_DIR, "eval_best.json"), "w") as f:
+        json.dump(eval_best, f, indent=2)
+    print(f"BEST checkpoint (epoch {result['best_epoch']})  -- Recall: {eval_best['recall_frac']} ({100*eval_best['recall']:.1f}%)  Coverage: {eval_best['coverage_pct']:.1f}%")
+else:
+    print("No model_best.pt found -- best-checkpoint evaluation skipped.")

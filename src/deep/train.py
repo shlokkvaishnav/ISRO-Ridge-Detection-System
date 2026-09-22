@@ -64,6 +64,17 @@ def train(
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_fn = torch.nn.BCEWithLogitsLoss()
 
+    # Track the best-val-loss checkpoint alongside the final one, in the
+    # same run: the merged Arm C result (research/DECISION_LOG.md,
+    # 2026-09-22) only saved the final (epoch 60) checkpoint despite val
+    # loss peaking at epoch 4, leaving "would the loss-optimal checkpoint
+    # give a similar recall?" unanswered. Saving both from one run answers
+    # it without a second training run's seed variance confounding the
+    # comparison (research/arm_c_early_stopping/SPEC.md).
+    best_val_loss = float("inf")
+    best_state_dict = None
+    best_epoch = None
+
     history = {"train_loss": [], "val_loss": []}
     for epoch in range(epochs):
         model.train()
@@ -91,16 +102,25 @@ def train(
         history["val_loss"].append(val_loss)
         print(f"epoch {epoch+1}/{epochs}  train_loss={train_loss:.4f}  val_loss={val_loss:.4f}")
 
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_epoch = epoch + 1
+            best_state_dict = {k: v.detach().clone() for k, v in model.state_dict().items()}
+
     os.makedirs(out_dir, exist_ok=True)
     torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+    if best_state_dict is not None:
+        torch.save(best_state_dict, os.path.join(out_dir, "model_best.pt"))
     with open(os.path.join(out_dir, "history.json"), "w") as f:
         json.dump(history, f, indent=2)
     val_ids = [dataset.manifest[i]["id"] for i in val_set.indices]
     with open(os.path.join(out_dir, "val_ids.json"), "w") as f:
         json.dump(val_ids, f, indent=2)
+    with open(os.path.join(out_dir, "best_epoch.json"), "w") as f:
+        json.dump({"best_epoch": best_epoch, "best_val_loss": best_val_loss, "final_epoch": epochs}, f, indent=2)
 
-    print(f"Saved model, history, and val split to {out_dir}")
-    return {"history": history, "val_ids": val_ids}
+    print(f"Saved model (final + best, epoch {best_epoch}), history, and val split to {out_dir}")
+    return {"history": history, "val_ids": val_ids, "best_epoch": best_epoch}
 
 
 def main() -> None:
