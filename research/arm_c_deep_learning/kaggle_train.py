@@ -40,20 +40,26 @@ TILES_DIR = DATASET_DIR
 SHP = os.path.join(DATASET_DIR, "shapefile", "WRINKLE_RIDGES_180.SHP")
 OUT_DIR = "/kaggle/working/arm_c"
 
-# Diagnostic printed unconditionally, not just on failure: a prior run hit a
-# FileNotFoundError for MANIFEST here, and the dataset turned out to
-# genuinely contain the file (confirmed independently afterward) -- most
-# likely a dataset-processing-not-finished-yet timing issue on Kaggle's
-# side, not a real bug in this script. Printing the actual mount contents
-# up front makes that distinction obvious from the log next time, instead
-# of guessing again.
-print(f"Contents of {DATASET_DIR}: {sorted(os.listdir(DATASET_DIR)) if os.path.exists(DATASET_DIR) else 'DOES NOT EXIST'}")
+# Diagnostics printed unconditionally, not just on failure: two prior runs
+# each hit a different mount-path failure (one where DATASET_DIR existed but
+# manifest.json didn't -- likely a dataset-processing timing issue; one
+# where DATASET_DIR itself didn't exist at all, despite server-side kernel
+# metadata confirming the dataset was attached -- cause still unclear).
+# Print what /kaggle/input actually contains rather than assuming the exact
+# subfolder name matches the dataset slug, so a naming mismatch (rather than
+# a missing/unready dataset) is immediately visible in the log next time.
+print(f"/kaggle/input contents: {sorted(os.listdir('/kaggle/input')) if os.path.exists('/kaggle/input') else 'DOES NOT EXIST'}")
+if os.path.exists(DATASET_DIR):
+    print(f"Contents of {DATASET_DIR}: {sorted(os.listdir(DATASET_DIR))}")
+
 if not os.path.exists(MANIFEST):
     raise FileNotFoundError(
-        f"{MANIFEST} not found. Dataset mount contents: "
-        f"{sorted(os.listdir(DATASET_DIR)) if os.path.exists(DATASET_DIR) else 'DATASET_DIR missing entirely'}. "
-        "If this dataset was just created/updated, it may not have finished "
-        "processing yet -- check https://www.kaggle.com/datasets/shlokkvaishnav/isro-ridge-tiles "
+        f"{MANIFEST} not found. /kaggle/input contents: "
+        f"{sorted(os.listdir('/kaggle/input')) if os.path.exists('/kaggle/input') else '/kaggle/input missing entirely'}. "
+        "If DATASET_DIR's name doesn't match what's listed above, fix "
+        "DATASET_DIR in this script. If nothing is listed at all, the "
+        "dataset may not be attached/ready -- check "
+        "https://www.kaggle.com/datasets/shlokkvaishnav/isro-ridge-tiles "
         "shows a completed version before re-running."
     )
 
