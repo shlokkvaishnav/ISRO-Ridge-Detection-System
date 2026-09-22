@@ -2,6 +2,47 @@
 
 Newest first.
 
+## 2026-09-22 — Arm A and Arm B are complementary, but the union isn't free
+
+Follow-up to the head-to-head entry below, answering its own OPEN item: do Arm A and Arm B
+catch the same true-ridge vertices or different ones?
+
+**ESTABLISHED**
+> Per-vertex breakdown across the same 6 tiles (57 true vertices total): both arms hit 12,
+> Arm A only 11, Arm B only 13, neither 21. The two filters are genuinely complementary, not
+> noisy variants of the same signal -- roughly half of all correctly-detected vertices (24 of
+> 36) are caught by only one of the two arms. Taking the union (A OR B) lifts aggregate
+> recall from 40.4%/43.9% (either alone) to 63.2% -- a real, substantial jump.
+>
+> This is not free: mask coverage also rises with the union, from ~28-40% (either arm alone)
+> to ~48-58% of tile area. The union's coverage growth roughly tracks its recall growth
+> (e.g. segment 3461: A=31%/B=28% -> union=48%, alongside 7/14 and 10/14 -> 12/14 hits) --
+> the "extra" hits from combining arms come from genuinely different response regions, not
+> from one arm being a cheap superset of the other. An ensemble is a real recall/precision
+> tradeoff, not a strictly-better option.
+
+**HYPOTHESIS**
+> That this complementarity itself is further evidence for the terrain-roughness hypothesis
+> in the entry below: if two structurally different filters each catch a different partial
+> subset of the true ridge and still leave 21/57 (37%) uncaught by either, that's consistent
+> with the ridge signal being genuinely weak/ambiguous relative to background terrain at
+> 100m/px in a way no local-filter-response approach fully resolves, rather than either
+> filter simply being tuned wrong.
+
+**OPEN**
+> Whether a smarter combination than a plain OR-union (e.g. requiring agreement in a local
+> neighborhood, or weighting by local response confidence) could get more of the recall gain
+> without the full coverage cost. Not tried -- the plain union was checked first since it's
+> the simplest test of "are these complementary at all," which was the actual open question.
+
+**DO NOT CLAIM**
+> That an ensemble of Arm A and Arm B is a good practical detector -- the plain union costs
+> roughly as much in added mask area as it gains in recall. This finding answers whether the
+> two arms are complementary (yes), not whether combining them is a good idea as a shipped
+> approach.
+
+## 2026-09-22 — Arm B (Hessian filters) implemented; head-to-head with Arm A on real tiles
+
 ## 2026-09-22 — Arm B (Hessian filters) implemented; head-to-head with Arm A on real tiles
 
 `src/hessian/ridge_filter.py` wraps scikit-image's `frangi`/`meijering`/`sato` directly

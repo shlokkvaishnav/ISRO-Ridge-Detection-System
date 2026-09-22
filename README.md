@@ -30,15 +30,24 @@ ridge catalog. Arm C (deep learning) not started.
 > close but not clearly better result: 25/57 (43.9%) vs Arm A's 23/57 (40.4%) aggregate
 > recall, with per-tile wins split roughly evenly between the two arms, and both landing in
 > the same 28-40% mask-coverage range on every tile. Full numbers in `research/DECISION_LOG.md`.
+>
+> The two arms are genuinely complementary, not noisy variants of the same signal: per-
+> vertex breakdown shows both hit 12, A-only 11, B-only 13, neither 21 (of 57). Taking the
+> union lifts recall to 63.2% — but not for free: mask coverage rises proportionally too,
+> from ~28-40% (either arm alone) to ~48-58% of tile area. This is a real recall/precision
+> tradeoff, not a free ensemble win.
 
 **HYPOTHESIS**
 > That the real-tile clutter problem reflects something more fundamental than either
 > specific ridge-detection filter — most likely that 100m/px GLD100 terrain roughness
 > genuinely competes with real wrinkle-ridge signal at the same spatial scale, which neither
 > phase symmetry nor Hessian-eigenvalue filtering can fully separate from a slope map alone.
-> This is the strongest evidence yet for needing Arm C rather than continued classical-arm
-> tuning — not proven, and still needs the per-morphology-class/degradation-bucket
-> breakdown `plan.md` calls for, not just an aggregate number.
+> The A/B complementarity finding above strengthens this further: two structurally different
+> filters each catch a different partial subset and still leave 37% of true vertices uncaught
+> by either — consistent with a genuinely weak/ambiguous signal at this resolution, not
+> either filter being tuned wrong. Strongest evidence yet for needing Arm C rather than
+> continued classical-arm tuning — not proven, and still needs the per-morphology-class/
+> degradation-bucket breakdown `plan.md` calls for, not just an aggregate number.
 >
 > That the "two flanks, not one crest line" output shape (see `research/DECISION_LOG.md`)
 > is specific to slope-domain filtering and that Arm C (if trained against the catalog's
@@ -48,9 +57,10 @@ ridge catalog. Arm C (deep learning) not started.
 > Whether `meijering`/`sato` (Arm B's other two methods, not yet tried) perform
 > meaningfully differently from `frangi` on the same tiles.
 >
-> Whether Arm A and Arm B are catching the *same* true-ridge vertices or complementary
-> ones — an aggregate recall comparison doesn't show this, and if they're substantially
-> non-overlapping an ensemble might help even without deep learning. Untested.
+> Whether a smarter A/B combination (local-neighborhood agreement, confidence-weighted)
+> could capture more of the union's recall gain without its full coverage cost — only the
+> plain OR-union was tested, since it was the simplest way to answer whether the two arms
+> are complementary at all.
 >
 > Whether the flat-tile false-positive risk from percentile-based grayscale normalization
 > is a real problem on actual tiles, or only synthetic near-zero-relief inputs.
@@ -60,13 +70,14 @@ ridge catalog. Arm C (deep learning) not started.
 
 **DO NOT CLAIM**
 > That either arm "works" on real lunar data in a usable sense, or that Arm B is better/worse
-> than Arm A — the aggregate numbers are close and the per-tile pattern is mixed. Do not
-> claim the terrain-roughness hypothesis above is confirmed; it's the best-supported
-> explanation so far, not a tested one.
+> than Arm A — the aggregate numbers are close and the per-tile pattern is mixed. That an
+> ensemble of A and B is a good practical detector — the plain union costs roughly as much in
+> added mask area as it gains in recall. Do not claim the terrain-roughness hypothesis above
+> is confirmed; it's the best-supported explanation so far, not a tested one.
 
 See [`plan.md`](plan.md) for the full plan and `research/DECISION_LOG.md` for implementation
 decisions and full findings (why `phasepack` wasn't used, flank-detection, flat-tile,
-real-data clutter/shape-filtering, and Arm A vs Arm B comparison findings).
+real-data clutter/shape-filtering, Arm A vs Arm B comparison, and A/B complementarity findings).
 
 ## Repository structure
 
