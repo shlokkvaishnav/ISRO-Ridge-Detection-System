@@ -80,7 +80,13 @@ def save_geotiff(path: str, data: np.ndarray, transform, crs, dtype) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--n", type=int, default=30)
+    parser.add_argument(
+        "--n", type=int, default=30,
+        help="target TOTAL tile count. Existing tiles in the manifest are kept "
+        "untouched and count toward this total -- only the shortfall is newly "
+        "sampled and extracted, so re-running with a larger --n grows the "
+        "dataset in place instead of overwriting it.",
+    )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--pad-km", type=float, default=2.0)
     args = parser.parse_args()
@@ -92,15 +98,28 @@ def main() -> None:
             "read remotely)."
         )
 
+    os.makedirs(TILES_DIR, exist_ok=True)
+    manifest_path = os.path.join(TILES_DIR, "manifest.json")
+    manifest = []
+    existing_ids = set()
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        existing_ids = {entry["id"] for entry in manifest}
+        print(f"Found existing manifest with {len(existing_ids)} tiles -- keeping them untouched")
+
+    n_needed = max(args.n - len(existing_ids), 0)
+    if n_needed == 0:
+        print(f"Already have {len(existing_ids)} >= requested {args.n} tiles, nothing to do")
+        return
+
     print(f"Loading ridge catalog from {SHP_PATH}")
     segments = load_ridge_catalog(SHP_PATH)
     print(f"  {len(segments)} segments loaded")
 
-    sample = stratified_sample_by_length(segments, args.n, seed=args.seed)
-    print(f"  sampled {len(sample)} segments across length quartiles")
-
-    os.makedirs(TILES_DIR, exist_ok=True)
-    manifest = []
+    candidates = [s for s in segments if s.id not in existing_ids]
+    sample = stratified_sample_by_length(candidates, n_needed, seed=args.seed)
+    print(f"  sampled {len(sample)} NEW segments across length quartiles (excluding {len(existing_ids)} already extracted)")
 
     print("Opening remote rasters (no full download, windowed reads only)...")
     with open_gld100_dem() as dem_src, open_wac_mosaic() as wac_src:
@@ -129,10 +148,9 @@ def main() -> None:
             )
             print(f"  segment {seg.id}: length={seg.length_km:.2f}km, dem={tiles['dem'].shape}, wac={tiles['wac'].shape}")
 
-    manifest_path = os.path.join(TILES_DIR, "manifest.json")
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2)
-    print(f"Manifest written to {manifest_path} ({len(manifest)} tiles)")
+    print(f"Manifest written to {manifest_path} ({len(manifest)} tiles total, {len(sample)} newly added)")
 
 
 if __name__ == "__main__":

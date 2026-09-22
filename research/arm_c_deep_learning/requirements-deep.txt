@@ -1,0 +1,7 @@
+# Arm C-only dependency, not in the top-level requirements.txt: torch is
+# not installed on the local dev machine (no discrete GPU -- see
+# research/arm_c_deep_learning/SPEC.md, this project trains on Kaggle's
+# GPU instead, where torch is already preinstalled in the base image).
+# Install this only if running src/deep/* locally, e.g. for a CPU smoke
+# test on a tiny subset.
+torch
