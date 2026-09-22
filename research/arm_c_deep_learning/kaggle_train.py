@@ -40,6 +40,23 @@ TILES_DIR = DATASET_DIR
 SHP = os.path.join(DATASET_DIR, "shapefile", "WRINKLE_RIDGES_180.SHP")
 OUT_DIR = "/kaggle/working/arm_c"
 
+# Diagnostic printed unconditionally, not just on failure: a prior run hit a
+# FileNotFoundError for MANIFEST here, and the dataset turned out to
+# genuinely contain the file (confirmed independently afterward) -- most
+# likely a dataset-processing-not-finished-yet timing issue on Kaggle's
+# side, not a real bug in this script. Printing the actual mount contents
+# up front makes that distinction obvious from the log next time, instead
+# of guessing again.
+print(f"Contents of {DATASET_DIR}: {sorted(os.listdir(DATASET_DIR)) if os.path.exists(DATASET_DIR) else 'DOES NOT EXIST'}")
+if not os.path.exists(MANIFEST):
+    raise FileNotFoundError(
+        f"{MANIFEST} not found. Dataset mount contents: "
+        f"{sorted(os.listdir(DATASET_DIR)) if os.path.exists(DATASET_DIR) else 'DATASET_DIR missing entirely'}. "
+        "If this dataset was just created/updated, it may not have finished "
+        "processing yet -- check https://www.kaggle.com/datasets/shlokkvaishnav/isro-ridge-tiles "
+        "shows a completed version before re-running."
+    )
+
 result = train(
     manifest_path=MANIFEST,
     tiles_dir=TILES_DIR,
