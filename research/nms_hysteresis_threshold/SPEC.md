@@ -34,3 +34,65 @@ The existing shape-filter pipeline's numbers on the same 6 tiles (21/52 recall, 
 
 **Confounds considered**
 Orientation estimation itself may be unreliable on noisy real terrain (the same terrain-roughness problem that broke simple thresholding could break orientation estimation too) — if so, NMS could suppress real ridge pixels as often as clutter. This needs checking directly (e.g. does the estimated orientation at true ridge-line pixels look locally coherent, similar to the existing phase-symmetry-response-at-truth-vertices check already done for the original clutter finding) rather than assumed to work from the synthetic-DEM tests alone, since those don't have real terrain-roughness noise.
+
+---
+
+## Results
+
+**Confound check (orientation coherence at true ridge vertices, segment 3461, 14 vertices):**
+mixed. Local 3x3-window circular std of orientation ranged 3.5-39.3 degrees across vertices.
+Notably, the highest-symmetry vertices (0.28-0.51) trended toward *less* coherent local
+orientation (26-39 deg std) than low-symmetry vertices (3.5-10 deg std) — the opposite of
+what would make NMS unambiguously safe. Not a clean abort signal, but not a clean pass
+either; proceeded to the actual experiment rather than over-interpreting one diagnostic.
+
+**Sweep, aggregate over all 6 tiles (57 true vertices), best point found:**
+
+| Config | Recall | Coverage |
+|---|---|---|
+| Baseline (shape-filter, `detect_ridges` defaults) | 23/57 (40.4%) | 33.2% |
+| NMS+hysteresis, low=65 high=88 | 24/57 (42.1%) | 30.8% |
+| NMS+hysteresis, low=70 high=88 | 24/57 (42.1%) | 30.8% |
+| NMS+hysteresis, low=60 high=85 | 27/57 (47.4%) | 41.8% |
+| NMS+hysteresis, low=70 high=90 | 20/57 (35.1%) | 23.9% |
+| NMS+hysteresis, low=75 high=95 | 5/57 (8.8%) | 10.9% |
+
+**Per-tile breakdown at the aggregate-best point (low=65, high=88):**
+
+| Tile | Baseline hits | Baseline coverage | NMS+hyst hits | NMS+hyst coverage |
+|---|---|---|---|---|
+| 3674 | 2/5 | 32% | 1/5 | 31% |
+| 1851 | 1/8 | 30% | 5/8 | 30% |
+| 748 | 3/8 | 36% | 3/8 | 33% |
+| 5017 | 4/7 | 35% | 4/7 | 28% |
+| 4098 | 6/15 | 36% | 4/15 | 32% |
+| 3461 | 7/14 | 31% | 7/14 | 30% |
+
+**Interpretation:** this is outcome (d), not outcome (a). The aggregate numbers alone (42.1%
+vs 40.4% recall, 30.8% vs 33.2% coverage) look like a clean win, but the per-tile breakdown
+shows it's driven substantially by one tile (1851: 5 vs 1 hits) while two others get
+strictly worse (3674: 1 vs 2; 4098: 4 vs 6) and three are flat or nearly so. Reporting the
+aggregate alone here would have overstated the result exactly the way
+`research/GIT_WORKFLOW.md`'s reviewer instructions warn against.
+
+**What this does establish:** NMS+hysteresis is a real, working alternative with a genuine
+(if inconsistent) effect, and its coverage is consistently at-or-below the shape-filter
+baseline across every tile tested — even where it loses on recall, it isn't spending more
+mask area to do so. That coverage consistency is worth keeping as a documented option.
+
+**What this does NOT establish:** that NMS+hysteresis should replace shape-filtering as the
+default, or that it reliably helps. Whatever makes it help dramatically on segment 1851 and
+hurt on 3674/4098 is not identified — this needs the per-morphology-class/degradation-bucket
+breakdown `plan.md` already calls for, not a single aggregate-recall verdict.
+
+**Confounds that remain:** the mixed orientation-coherence finding above may partly explain
+the per-tile inconsistency (tiles where orientation happens to be locally coherent near the
+true ridge may be exactly where NMS helps) — not tested directly per-tile, only in aggregate
+on one segment.
+
+**Decision: MERGE as an additional documented option, not a new default.** The
+implementation is correct and tested (6 new tests, all passing), the coverage-consistency
+finding is real and worth keeping available, and the mixed-per-tile result is itself a
+legitimate, honestly-reported finding — not a broken feature. `detect_ridges` (shape-filter)
+remains the default; `detect_ridges_nms_hysteresis` is available as an alternative for the
+eventual per-morphology-class comparison to weigh in on.
