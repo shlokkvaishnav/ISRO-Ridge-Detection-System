@@ -23,7 +23,8 @@ def monogenic_phase_symmetry(
     mult: float = 2.1,
     sigma_onf: float = 0.55,
     noise_threshold: float = 2.0,
-) -> np.ndarray:
+    return_orientation: bool = False,
+):
     """Compute a monogenic phase-symmetry response map.
 
     Parameters
@@ -45,11 +46,20 @@ def monogenic_phase_symmetry(
         from the smallest scale's median response) — see
         research/DECISION_LOG.md for why a fixed threshold was used first,
         and adaptive estimation is a documented follow-up.
+    return_orientation:
+        If True, also return a per-pixel local orientation estimate (see
+        below), for use by non-maximum suppression
+        (research/nms_hysteresis_threshold/SPEC.md).
 
     Returns
     -------
     Float array, same shape as ``image``, normalized to [0, 1], where higher
-    values indicate stronger local symmetry.
+    values indicate stronger local symmetry. If ``return_orientation`` is
+    True, returns ``(symmetry, orientation)`` instead, where ``orientation``
+    is the per-pixel angle (radians) of the amplitude-weighted, summed-
+    across-scales Riesz (odd) response vector -- the direction of local
+    asymmetry, i.e. perpendicular to a ridge line, analogous to Canny's
+    gradient direction.
     """
     if image.ndim != 2:
         raise ValueError(f"expected a 2D image, got shape {image.shape}")
@@ -72,6 +82,8 @@ def monogenic_phase_symmetry(
 
     total_energy = np.zeros((rows, cols))
     total_amplitude = np.zeros((rows, cols)) + 1e-6
+    weighted_odd1 = np.zeros((rows, cols))
+    weighted_odd2 = np.zeros((rows, cols))
 
     wavelength = min_wavelength
     for _ in range(n_scales):
@@ -92,10 +104,21 @@ def monogenic_phase_symmetry(
         total_energy += np.maximum(energy, 0.0)
         total_amplitude += amplitude
 
+        if return_orientation:
+            # weight each scale's odd-vector contribution by its own
+            # amplitude, so stronger-response scales dominate the summed
+            # orientation estimate rather than every scale voting equally
+            weighted_odd1 += odd1 * amplitude
+            weighted_odd2 += odd2 * amplitude
+
         wavelength *= mult
 
     symmetry = total_energy / total_amplitude
     peak = symmetry.max()
     if peak > 0:
         symmetry = symmetry / peak
+
+    if return_orientation:
+        orientation = np.arctan2(weighted_odd2, weighted_odd1)
+        return symmetry, orientation
     return symmetry
