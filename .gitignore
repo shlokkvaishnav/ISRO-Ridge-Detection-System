@@ -11,4 +11,5 @@ data/tiles/*/
 .DS_Store
 results/*
 !results/arm_c_random_split/
+!results/arm_c/
 staging/

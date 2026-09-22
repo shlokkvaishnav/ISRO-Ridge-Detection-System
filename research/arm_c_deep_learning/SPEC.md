@@ -73,3 +73,80 @@ tooling/infrastructure issues encountered while building toward the first
 training run, recorded here because research/GIT_WORKFLOW.md's spec
 discipline says amendments get dated notes, not silently folded into a
 rewritten history.
+
+- Manifest paths were written with `os.path.relpath` on this Windows dev
+  machine, producing backslash-separated strings. Training on Kaggle
+  (Linux) failed with `RasterioIOError` because Linux doesn't treat `\` as
+  a path separator -- fixed at the source (explicit forward-slash paths)
+  and repaired all 120 existing entries; verified Arm A still reproduces
+  its on-record number after the fix.
+- The dataset mount path assumption (`/kaggle/input/<slug>/`) was wrong for
+  this account -- actual layout nests under
+  `/kaggle/input/datasets/<owner>/<slug>/`. Fixed by searching for the
+  directory containing `manifest.json` instead of hardcoding either layout.
+
+## Results
+
+**First run (random 20% val split, before the holdout fix above):** 129/198
+(65.2%) recall, 25.6% coverage. Preserved in `results/arm_c_random_split/`
+but **not used as the headline number** -- only 1 of the 6 tiles Arm A/B
+were compared on happened to land in this random val split; the other 5
+were in Arm C's training set, so this number isn't a fair three-way
+comparison. Kept for the record, not cited as the result.
+
+**Holdout run (the 6 Arm A/B benchmark tiles excluded from training
+entirely, per the `holdout_ids` fix):**
+
+| Arm | Recall (57 vertices, 6 tiles) | Coverage |
+|---|---|---|
+| A (phase symmetry, shape-filtered) | 23/57 = 40.4% | 33.2% |
+| B (Hessian/frangi) | 25/57 = 43.9% | ~similar range |
+| **C (this run)** | **40/57 = 70.2%** | **30.8%** |
+
+Per-tile: 3674 (5/5), 1851 (6/8), 748 (2/8), 5017 (6/7), 4098 (12/15), 3461
+(9/14) -- recall independently recomputed from the raw per-tile numbers
+(`5+6+2+6+12+9=40`, `5+8+8+7+15+14=57`), matches exactly.
+
+**A real confound, not yet resolved: the training history shows clear
+overfitting past epoch ~4-10.** Validation loss (on the held-out 6 tiles)
+reaches its minimum at epoch 4 (0.545), then rises to 1.1-3.3 by epoch 60
+while train loss keeps falling (0.67 -> 0.16). No early stopping was used;
+`model.pt` is the final (epoch 60), not best-val-loss, checkpoint, and only
+the final checkpoint was saved -- the epoch-4 checkpoint's recall/coverage
+is unknown and cannot be recovered without retraining. This does not
+automatically invalidate the 70.2% recall number: BCE loss measures
+per-pixel probability calibration, which is a different objective from
+threshold-then-count-vertices recall, and coverage staying at a reasonable
+30.8% (not saturating toward marking the whole tile positive) argues
+against the crudest overfitting failure mode. But an overfit-loss-curve
+model producing a good recall number on the same 6 tiles used to tune
+`epochs`/architecture choices earlier in this SPEC is exactly the kind of
+result that needs independent scrutiny before being trusted as a clean
+win, per this SPEC's own interpretation plan ("(a) -> scrutinize hard for a
+labeling/evaluation bug before believing it").
+
+**What this establishes:** Arm C, in this specific run, substantially
+outperforms both classical arms on the exact same 6-tile benchmark, using
+comparable-to-lower mask coverage than Arm A. The result is reproducible
+in the sense that the arithmetic checks out and the metric has no leakage
+(evaluate.py scores against the real catalog polylines directly, never
+touching the weak-label buffers used for training).
+
+**What this does NOT establish:** That this specific recall number is
+stable/repeatable -- single run, single seed, no repeated-seed variance
+reported (unlike the classical arms' 6-tile comparisons, which were at
+least deterministic given fixed algorithms). Whether early stopping at the
+loss-based optimum would give a similar, better, or worse recall number --
+untested. Whether the result holds with a larger/more tiles, given the
+persistent gap to DBR-Net's 1,069-tile training set. Whether the weak-label
+supervision (vs. DBR-Net's hand-labeled masks) is doing something that
+happens to correlate well with this specific evaluation metric in a way
+that wouldn't hold for a genuinely independent, hand-labeled test set --
+still an open, undissolved confound from this SPEC's original confounds
+section.
+
+**Recommended immediate follow-up, not done in this pass:** rerun with
+early stopping (save the best-val-loss checkpoint, not just the final one)
+and compare its recall/coverage against this run's 70.2%/30.8% -- the
+single most direct way to check whether the overfitting confound above
+actually matters for this metric or not.

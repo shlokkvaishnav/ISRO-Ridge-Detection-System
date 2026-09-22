@@ -11,12 +11,11 @@ alternate approaches considered.
 
 ## Status
 
-**Arms A and B both implemented; head-to-head on real GLD100 tiles they perform comparably
-(~40-44% aggregate ridge-vertex recall, 28-40% mask coverage), which is the strongest
-evidence yet that 100m/px terrain roughness — not either specific filter — is the real
-bottleneck.** 30-tile pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no
-full download, see `research/DECISION_LOG.md`), stratified across the Thompson et al. 2017
-ridge catalog. Arm C (deep learning) not started.
+**All three arms implemented. Arm C (deep learning) substantially beats both classical arms
+on the exact same 6-tile benchmark (70.2% recall vs 40.4%/43.9%) — a real result, with a
+real, unresolved overfitting confound attached (see below), not yet a settled win.** 120-tile
+pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full download, see
+`research/DECISION_LOG.md`), stratified across the Thompson et al. 2017 ridge catalog.
 
 **ESTABLISHED**
 > On synthetic DEMs, both Arm A and Arm B correctly detect ridges only when present and
@@ -36,6 +35,27 @@ ridge catalog. Arm C (deep learning) not started.
 > union lifts recall to 63.2% — but not for free: mask coverage rises proportionally too,
 > from ~28-40% (either arm alone) to ~48-58% of tile area. This is a real recall/precision
 > tradeoff, not a free ensemble win.
+>
+> An alternative Arm A post-processing (non-maximum suppression + hysteresis thresholding,
+> instead of shape-filtering) was tried and merged as an additional option, not a new
+> default — mixed result, driven substantially by one tile, two others got strictly worse.
+> Coverage was consistently at-or-below the shape-filter baseline on every tile tested
+> though, which is the one part worth keeping. Full numbers in `research/DECISION_LOG.md`.
+>
+> **Arm C (dual-branch DEM+aspect CNN, DBR-Net-inspired) beats both classical arms on the
+> same 6-tile, 57-vertex benchmark**: 40/57 (70.2%) recall at 30.8% coverage, vs Arm A's
+> 40.4%/33.2% and Arm B's 43.9%. Trained on Kaggle's GPU (114 of 120 tiles, the 6 benchmark
+> tiles held out of training entirely — not just a random split, which a first attempt used
+> and which leaked 5 of those 6 tiles into training before being caught). Architecture
+> deliberately smaller than DBR-Net's own (ResNet-34-per-branch would overfit ~9x less
+> training data); weak polyline-buffer labels instead of DBR-Net's hand-labeled masks, a
+> real, acknowledged supervision-quality gap. **A real confound attached to this number**:
+> training history shows clear overfitting past epoch ~4-10 (val loss bottoms out at epoch 4,
+> rises 2-6x by epoch 60 while train loss keeps falling), no early stopping was used, and
+> only the final (overfit) checkpoint was saved — whether the loss-optimal checkpoint would
+> give a similar, better, or worse recall number is untested. Full numbers, per-tile
+> breakdown, and the five infrastructure bugs hit getting a Kaggle GPU run working at all:
+> `research/arm_c_deep_learning/SPEC.md`.
 
 **HYPOTHESIS**
 > That the real-tile clutter problem reflects something more fundamental than either
@@ -46,12 +66,13 @@ ridge catalog. Arm C (deep learning) not started.
 > filters each catch a different partial subset and still leave 37% of true vertices uncaught
 > by either — consistent with a genuinely weak/ambiguous signal at this resolution, not
 > either filter being tuned wrong. Strongest evidence yet for needing Arm C rather than
-> continued classical-arm tuning — not proven, and still needs the per-morphology-class/
+> continued classical-arm tuning — Arm C's result below is consistent with this, not
+> conclusive proof given its overfitting confound. Still needs the per-morphology-class/
 > degradation-bucket breakdown `plan.md` calls for, not just an aggregate number.
 >
-> That the "two flanks, not one crest line" output shape (see `research/DECISION_LOG.md`)
-> is specific to slope-domain filtering and that Arm C (if trained against the catalog's
-> single-centerline ground truth) will not reproduce it. Not yet tested.
+> That the loss-optimal (early-stopped) Arm C checkpoint would give a similar, better, or
+> worse recall/coverage than the overfit final checkpoint's 70.2%/30.8% — the single most
+> direct open question about the headline Arm C result below, not yet tested.
 
 **OPEN**
 > Whether `meijering`/`sato` (Arm B's other two methods, not yet tried) perform
@@ -65,19 +86,30 @@ ridge catalog. Arm C (deep learning) not started.
 > Whether the flat-tile false-positive risk from percentile-based grayscale normalization
 > is a real problem on actual tiles, or only synthetic near-zero-relief inputs.
 >
-> Whether these findings hold across all 30 pilot tiles or just the 6 inspected in detail
-> so far.
+> Whether these findings hold across all 120 pilot tiles or just the 6 used for the
+> head-to-head benchmark so far.
+>
+> Whether Arm C's result is stable across seeds/reruns — single run only, no variance
+> reported, unlike the classical arms' deterministic numbers.
 
 **DO NOT CLAIM**
-> That either arm "works" on real lunar data in a usable sense, or that Arm B is better/worse
+> That Arm C is a validated, production-ready detector, or that its 70.2% recall is
+> guaranteed to reproduce on a rerun — the overfitting confound is real and unresolved.
+> "Beats the classical arms in this run" is the supported claim, not "is a better detector"
+> unqualified.
+>
+> That either classical arm "works" on real lunar data in a usable sense, or that Arm B is better/worse
 > than Arm A — the aggregate numbers are close and the per-tile pattern is mixed. That an
 > ensemble of A and B is a good practical detector — the plain union costs roughly as much in
 > added mask area as it gains in recall. Do not claim the terrain-roughness hypothesis above
 > is confirmed; it's the best-supported explanation so far, not a tested one.
 
-See [`plan.md`](plan.md) for the full plan and `research/DECISION_LOG.md` for implementation
+See [`plan.md`](plan.md) for the full plan, `research/DECISION_LOG.md` for implementation
 decisions and full findings (why `phasepack` wasn't used, flank-detection, flat-tile,
-real-data clutter/shape-filtering, Arm A vs Arm B comparison, and A/B complementarity findings).
+real-data clutter/shape-filtering, Arm A vs Arm B comparison, A/B complementarity, and the
+Arm C headline result), and `research/arm_c_deep_learning/SPEC.md` for Arm C's full writeup
+including the overfitting confound and infrastructure incidents getting a Kaggle GPU run
+working at all.
 
 ## Repository structure
 
