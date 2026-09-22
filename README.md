@@ -11,22 +11,24 @@ alternate approaches considered.
 
 ## Status
 
-**Arm A implemented; passes on synthetic ridges, fails to cleanly isolate real ridges from
-terrain-roughness clutter on real GLD100 tiles.** 30-tile pilot pulled directly from the
-remote LROC WAC + GLD100 mosaics (no full download, see `research/DECISION_LOG.md`),
-stratified across the Thompson et al. 2017 ridge catalog. Arms B (Hessian filters) and C
-(deep learning) not started.
+**Arm A implemented; a shape-filtering fix roughly tripled real-ridge recall on real GLD100
+tiles, but the mask is still ~30-36% of tile area — a partial, measured improvement, not a
+solved detector.** 30-tile pilot pulled directly from the remote LROC WAC + GLD100 mosaics
+(no full download, see `research/DECISION_LOG.md`), stratified across the Thompson et al.
+2017 ridge catalog. Arms B (Hessian filters) and C (deep learning) not started.
 
 **ESTABLISHED**
 > On synthetic DEMs (straight ridge, curved ridge, flat/no-ridge control), Arm A correctly
 > detects ridges only when present and tracks a curved ridge's true centerline to within a
-> few pixels on average. `tests/test_classical_pipeline.py` (5 tests, all passing).
+> few pixels on average. `tests/test_classical_pipeline.py` (6 tests, all passing).
 >
-> On real GLD100 tiles, this does not transfer: percentile-based thresholding produces
-> masks dominated by scattered terrain-roughness clutter, not a clean ridge trace. Quantified
-> on segment 3461 (31.7km ridge): only 1 of 14 true ridge-line vertices clears the mask's own
-> 90th-percentile threshold; most score at or below the tile's mean response. Full writeup
-> and root-cause analysis in `research/DECISION_LOG.md`.
+> On real GLD100 tiles, the original percentile-threshold-then-close approach failed: only
+> 1 of 14 true ridge vertices (segment 3461) cleared the mask's own 90th-percentile cutoff.
+> Reordering to shape-filter individual fragments (favoring elongated components over blobs)
+> *before* gap-linking, plus loosening the threshold to the 75th percentile, roughly tripled
+> aggregate recall across all 6 inspected tiles (6/52 -> 21/52 true vertices covered). The
+> mask still covers 30-36% of tile area on every tile tested — visually large amorphous
+> patches, not a clean ridge trace. Full numbers and mechanism in `research/DECISION_LOG.md`.
 
 **HYPOTHESIS** — carried into the eventual arm comparison, not yet tested against B/C:
 > That the "two flanks, not one crest line" output shape (see
@@ -34,28 +36,29 @@ stratified across the Thompson et al. 2017 ridge catalog. Arms B (Hessian filter
 > (Hessian filters, run on the same slope map) will show the same shape, while Arm C (if
 > trained against a catalog's single-centerline ground truth) will not.
 >
-> That the real-tile thresholding failure is fixable at the threshold/morphology stage
-> (absolute response floor, orientation coherence, connected-component length filtering)
-> rather than being an inherent limit of slope-domain phase symmetry on degraded, 100m/px
-> terrain. Not yet distinguished — see `research/DECISION_LOG.md`.
+> Whether further real-tile gains need a fundamentally different signal (orientation
+> coherence, an absolute physical-units floor) or reflect a real ceiling on slope-domain
+> classical detection at 100m/px that motivates Arm C — not yet distinguished from continued
+> threshold/shape-parameter tuning.
 
 **OPEN**
 > Whether the flat-tile false-positive risk from percentile-based grayscale normalization
 > (separate from the terrain-roughness finding above) is a real problem on actual tiles, or
 > only synthetic near-zero-relief inputs.
 >
-> Whether the real-tile clutter finding holds across all 30 pilot tiles or just the two
-> inspected in detail so far (1851, 3461 quantitatively; the rest only by eye/pixel count).
+> Whether the shape-filtering improvement holds across all 30 pilot tiles or just the 6
+> inspected in detail so far.
 
 **DO NOT CLAIM**
-> That Arm A works on real lunar data in its current threshold form — it does not, on every
-> tile inspected so far. Do not claim the phase-symmetry filter itself is broken; the
-> response does show local structure near the true ridge, the threshold step is the
-> better-supported culprit but not the confirmed sole one.
+> That Arm A "works" on real lunar data, or that the current thresholding scheme is
+> finished — it's a measured, partial recall improvement with a real, unmeasured precision
+> cost (30-36% mask coverage). Do not claim the phase-symmetry filter itself is broken; the
+> response does show local structure near the true ridge, the threshold/shape step is the
+> better-supported bottleneck but not the confirmed sole one.
 
 See [`plan.md`](plan.md) for the full plan and `research/DECISION_LOG.md` for implementation
 decisions and full findings (why `phasepack` wasn't used, flank-detection, flat-tile, and
-real-data clutter findings).
+real-data clutter/shape-filtering findings).
 
 ## Repository structure
 

@@ -19,12 +19,21 @@ def detect_ridges(
     elevation: np.ndarray,
     pixel_size: float = 1.0,
     phase_symmetry_kwargs: Optional[dict] = None,
-    threshold_percentile: float = 90.0,
-    closing_radius: int = 2,
-    opening_min_size: int = 8,
-    gap_link_radius: int = 3,
+    threshold_percentile: float = 75.0,
+    denoise_max_size: int = 5,
+    min_length_px: float = 8.0,
+    min_eccentricity: float = 0.85,
+    gap_link_radius: int = 4,
 ) -> dict:
     """Run the full classical pipeline on a raw elevation array.
+
+    Defaults updated 2026-09-22 (see research/DECISION_LOG.md) after real-
+    tile testing showed the original 90th-percentile-threshold-then-close
+    approach missed most of a real ridge's own response values. The current
+    defaults trade a looser threshold for shape-based filtering (elongation)
+    doing the actual clutter-vs-ridge discrimination -- a real, still
+    partial improvement (recall roughly 2-4x across tested tiles), not a
+    solved problem; see the decision log for exact numbers.
 
     Returns every intermediate stage (not just the final mask) so a caller
     can inspect or visualize the pipeline for debugging and for the
@@ -39,8 +48,9 @@ def detect_ridges(
     binary = threshold_response(phase_symmetry, percentile=threshold_percentile)
     ridge_mask = clean_ridge_mask(
         binary,
-        closing_radius=closing_radius,
-        opening_min_size=opening_min_size,
+        denoise_max_size=denoise_max_size,
+        min_length_px=min_length_px,
+        min_eccentricity=min_eccentricity,
         gap_link_radius=gap_link_radius,
     )
 

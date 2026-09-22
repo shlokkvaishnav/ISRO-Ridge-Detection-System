@@ -2,6 +2,46 @@
 
 Newest first.
 
+## 2026-09-22 — Shape-filtered thresholding: real, partial improvement, not a fix
+
+Follow-up to the same-day entry below. Tuned against real tiles (not assumed): the fix is
+to shape-filter individual thresholded fragments (favoring elongated components over blobs,
+via `skimage.measure.regionprops` eccentricity + major-axis length) *before* gap-linking,
+not after -- gap-linking first fuses most of a real tile's thresholded pixels into one
+sprawling connected blob, at which point per-component shape discrimination has nothing
+left to discriminate between. New defaults: `threshold_percentile=75` (loosened from 90,
+so more of the true ridge's moderate response values are admitted),
+`min_length_px=8, min_eccentricity=0.85` (rejects blob-shaped clutter),
+`gap_link_radius=4`. See `src/classical/morphology.py` and
+`tests/test_classical_pipeline.py::TestCleanRidgeMask::test_blob_shaped_clutter_is_rejected`
+for the mechanism directly under test.
+
+**ESTABLISHED**
+> Across all 6 previously-inspected real tiles (3674, 1851, 748, 5017, 4098, 3461), true-
+> ridge-vertex recall roughly tripled in aggregate (6/52 -> 21/52 true vertices covered by
+> the mask) after reordering shape-filtering before gap-linking and loosening the threshold.
+> Per-tile: 3674 (2/5), 1851 (1/8), 748 (3/8), 5017 (4/7), 4098 (6/15), 3461 (7/14).
+
+**Still true, not fixed**:
+> The mask covers 30-36% of tile area on every tile tested -- visually, this is large
+> amorphous white patches, not a clean line tracing the ridge (see
+> `results/real_tiles_v2/3461/classical_arm_stages.png` for a representative example). This
+> is a real, measured, reproducible improvement in recall, not a solved detector -- calling
+> it "working" would overstate what changed. Most of the mask is still not the ridge.
+
+**OPEN**
+> Whether further gains need a fundamentally different signal (orientation coherence across
+> neighboring pixels, an absolute physical-units floor rather than any percentile scheme,
+> or accepting that slope-domain classical detection has a real ceiling on 100m/px terrain
+> that motivates Arm C) rather than continued threshold/shape-parameter tuning. Not yet
+> tested: whether Arm B (Hessian filters) on the same slope maps has a different failure
+> mode or the same one.
+
+**DO NOT CLAIM**
+> That Arm A now "works" on real data, or that this is a finished thresholding scheme --
+> it is a measured, partial improvement (recall) with a real, unresolved cost (mask area /
+> precision) that has not been optimized or even measured in this pass.
+
 ## 2026-09-22 — On real lunar tiles, percentile thresholding fails to isolate the mapped ridge from terrain-roughness clutter
 
 First real-data test of Arm A, on 30 tiles extracted from LROC WAC + GLD100 (see

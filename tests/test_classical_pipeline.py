@@ -80,16 +80,14 @@ class TestDetectRidges:
 
 
 class TestCleanRidgeMask:
-    def test_closing_bridges_a_gapped_ridge_line(self):
-        # A 5px-thick line, not 1px: a disk structuring element erodes away
-        # anything thinner than its own radius regardless of what dilation
-        # bridged first, so a 1px fixture would fail for a reason that has
-        # nothing to do with gap-linking. Real ridge-mask fragments (from
-        # thresholded phase-symmetry response) are never 1px thick, so this
-        # matches what the pipeline actually produces. Thickness/gap/radius
-        # chosen from an empirical check (see PR discussion / run log), not
-        # hand-derived disk geometry -- the pinch-point math for a closing
-        # bridge is sensitive to discretization.
+    def test_gap_linking_bridges_two_elongated_fragments(self):
+        # A 5px-thick, 20-25px-long line: elongated enough (eccentricity)
+        # to survive shape filtering, thick enough that a disk structuring
+        # element doesn't erode it away entirely during gap-linking. A 1px
+        # fixture would fail for reasons unrelated to gap-linking (see prior
+        # history of this test); real ridge-mask fragments are never that
+        # thin. Params chosen from an empirical check (see
+        # research/DECISION_LOG.md, 2026-09-22 real-tile tuning).
         size = 64
         mask = np.zeros((size, size), dtype=bool)
         mask[28:33, 5:25] = True
@@ -97,15 +95,34 @@ class TestCleanRidgeMask:
 
         assert label(mask, connectivity=2).max() == 2, "fixture should start as two components"
 
-        cleaned = clean_ridge_mask(mask, closing_radius=1, opening_min_size=1, gap_link_radius=5)
+        cleaned = clean_ridge_mask(mask, denoise_max_size=1, min_length_px=8, min_eccentricity=0.85, gap_link_radius=5)
         assert label(cleaned, connectivity=2).max() == 1, "gap should be bridged into one component"
 
-    def test_opening_removes_small_noise_blobs(self):
+    def test_denoise_removes_small_noise_blobs(self):
         size = 64
         mask = np.zeros((size, size), dtype=bool)
         mask[10, 10] = True  # single-pixel noise speck
-        mask[40:45, 40] = True  # a real 5px ridge fragment
+        mask[40:50, 40] = True  # a real 10px ridge fragment -- long enough
+        # not to collide with the denoise_max_size cutoff itself (a fragment
+        # sized exactly at the cutoff would be ambiguous by construction)
 
-        cleaned = clean_ridge_mask(mask, closing_radius=1, opening_min_size=4, gap_link_radius=1)
+        cleaned = clean_ridge_mask(mask, denoise_max_size=4, min_length_px=8, min_eccentricity=0.85, gap_link_radius=1)
         assert not cleaned[10, 10]
-        assert cleaned[40:45, 40].any()
+        assert cleaned[40:50, 40].any()
+
+    def test_blob_shaped_clutter_is_rejected(self):
+        # A compact, roughly circular blob (low eccentricity) should be
+        # filtered out even though it's larger than the denoise cutoff --
+        # this is the actual mechanism the real-tile fix depends on: telling
+        # terrain-roughness clutter (blob-shaped) apart from ridges
+        # (elongated), not just noise specks apart from real signal.
+        size = 64
+        mask = np.zeros((size, size), dtype=bool)
+        yy, xx = np.mgrid[0:size, 0:size]
+        blob = (yy - 30) ** 2 + (xx - 30) ** 2 <= 6**2
+        mask |= blob
+        mask[10:22, 10] = True  # a genuine elongated fragment, for contrast
+
+        cleaned = clean_ridge_mask(mask, denoise_max_size=4, min_length_px=8, min_eccentricity=0.85, gap_link_radius=1)
+        assert not cleaned[30, 30], "the circular blob's center should not survive shape filtering"
+        assert cleaned[10:22, 10].any(), "the elongated fragment should survive"

@@ -58,7 +58,7 @@ def main() -> None:
     parser.add_argument("--dem", type=str, default=None, help="path to a DEM GeoTIFF")
     parser.add_argument("--out", type=str, default="results", help="output directory")
     parser.add_argument("--pixel-size", type=float, default=1.0)
-    parser.add_argument("--threshold-percentile", type=float, default=90.0)
+    parser.add_argument("--threshold-percentile", type=float, default=75.0)
     args = parser.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
