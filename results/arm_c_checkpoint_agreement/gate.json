@@ -1,0 +1,226 @@
+{
+ "note": "Computed from each checkpoint's per-tile hit counts only. No joint C x C2 quantity has been read at this step.",
+ "gate": {
+  "C": {
+   "reference_file": "results/arm_c/eval.json",
+   "reference_per_tile": {
+    "3674": {
+     "hits": 5,
+     "truth": 5
+    },
+    "1851": {
+     "hits": 6,
+     "truth": 8
+    },
+    "748": {
+     "hits": 2,
+     "truth": 8
+    },
+    "5017": {
+     "hits": 6,
+     "truth": 7
+    },
+    "4098": {
+     "hits": 12,
+     "truth": 15
+    },
+    "3461": {
+     "hits": 9,
+     "truth": 14
+    }
+   },
+   "observed_per_tile": {
+    "3674": {
+     "hits": 5,
+     "truth": 5
+    },
+    "1851": {
+     "hits": 6,
+     "truth": 8
+    },
+    "748": {
+     "hits": 2,
+     "truth": 8
+    },
+    "5017": {
+     "hits": 6,
+     "truth": 7
+    },
+    "4098": {
+     "hits": 12,
+     "truth": 15
+    },
+    "3461": {
+     "hits": 9,
+     "truth": 14
+    }
+   },
+   "passed": true
+  },
+  "C2": {
+   "reference_file": "results/arm_c_early_stopping/eval_best.json",
+   "reference_per_tile": {
+    "3674": {
+     "hits": 5,
+     "truth": 5
+    },
+    "1851": {
+     "hits": 8,
+     "truth": 8
+    },
+    "748": {
+     "hits": 4,
+     "truth": 8
+    },
+    "5017": {
+     "hits": 7,
+     "truth": 7
+    },
+    "4098": {
+     "hits": 11,
+     "truth": 15
+    },
+    "3461": {
+     "hits": 5,
+     "truth": 14
+    }
+   },
+   "observed_per_tile": {
+    "3674": {
+     "hits": 5,
+     "truth": 5
+    },
+    "1851": {
+     "hits": 8,
+     "truth": 8
+    },
+    "748": {
+     "hits": 4,
+     "truth": 8
+    },
+    "5017": {
+     "hits": 7,
+     "truth": 7
+    },
+    "4098": {
+     "hits": 11,
+     "truth": 15
+    },
+    "3461": {
+     "hits": 5,
+     "truth": 14
+    }
+   },
+   "passed": true
+  },
+  "vertex_order_contiguous": {
+   "passed": true
+  }
+ },
+ "gate_passed": true,
+ "marginals": {
+  "3674": {
+   "n": 5,
+   "C": 5,
+   "C2": 5
+  },
+  "1851": {
+   "n": 8,
+   "C": 6,
+   "C2": 8
+  },
+  "748": {
+   "n": 8,
+   "C": 2,
+   "C2": 4
+  },
+  "5017": {
+   "n": 7,
+   "C": 6,
+   "C2": 7
+  },
+  "4098": {
+   "n": 15,
+   "C": 12,
+   "C2": 11
+  },
+  "3461": {
+   "n": 14,
+   "C": 9,
+   "C2": 5
+  }
+ },
+ "informative_tiles": [
+  748,
+  4098,
+  3461
+ ],
+ "uninformative_tiles": {
+  "3674": "C 5/5, C2 5/5",
+  "1851": "C2 8/8",
+  "5017": "C2 7/7"
+ },
+ "n_informative_vertices": 37,
+ "power": {
+  "E_S": 13.014285714285716,
+  "S_max": 18,
+  "null_pmf_S": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   3.8815187951765656e-05,
+   0.001901944209636517,
+   0.021152552314247758,
+   0.09724851286860704,
+   0.22837131471354385,
+   0.29896728075691964,
+   0.22632077498639508,
+   0.09900601753035035,
+   0.02400895807489214,
+   0.002865266601530338,
+   0.00011856275592539329
+  ],
+  "min_achievable_p": 0.00011856275592539329,
+  "alpha": 0.05,
+  "critical_S": 16,
+  "p_at_critical_S": 0.026992787432347874,
+  "p_at_critical_S_minus_1": 0.12599880496269822,
+  "index_at_critical_S": 0.5988538681948423,
+  "test_can_reject": true
+ },
+ "power_leave_one_informative_tile_out": {
+  "748": {
+   "E_S": 12.014285714285716,
+   "S_max": 16,
+   "min_achievable_p": 0.0005532928609851687,
+   "critical_S": 15,
+   "p_at_critical_S": 0.012449089372166296,
+   "p_at_critical_S_minus_1": 0.09221547683086145,
+   "index_at_critical_S": 0.7491039426523296
+  },
+  "4098": {
+   "E_S": 4.214285714285714,
+   "S_max": 7,
+   "min_achievable_p": 0.013486513486513488,
+   "critical_S": 7,
+   "p_at_critical_S": 0.013486513486513488,
+   "p_at_critical_S_minus_1": 0.11688311688311688,
+   "index_at_critical_S": 1.0
+  },
+  "3461": {
+   "E_S": 9.8,
+   "S_max": 13,
+   "min_achievable_p": 0.0018838304552590266,
+   "critical_S": 12,
+   "p_at_critical_S": 0.03799058084772371,
+   "p_at_critical_S_minus_1": 0.2263736263736264,
+   "index_at_critical_S": 0.6874999999999999
+  }
+ },
+ "proceed_to_analysis": true
+}

@@ -69,3 +69,47 @@ For every outcome, report the A/B reference contrast next to the C/C2 result, wi
 - **Exact-pixel metric.** Both checkpoints are scored with the exact-pixel hit rule, so a vertex one pixel outside one checkpoint's mask counts as disagreement. No tolerance is applied, because `vertices.json` records C and C2 at exact pixel only.
 
 
+
+## Results
+
+All numbers come from `research/arm_c_checkpoint_agreement/agreement.py`, which reads only
+committed JSON (`results/three_way_vertex_map/vertices.json` and the two eval files). Raw
+outputs: `results/arm_c_checkpoint_agreement/gate.json` and `analysis.json`.
+
+### Validation gate and power check: passed (`gate.json`)
+
+Recorded and committed **before** any joint C x C2 quantity was computed. This step reads
+each checkpoint's per-tile hit counts separately.
+
+- **Gate:** the per-tile sums of `C` and `C2` in `vertices.json` equal the per-tile hits in
+  `results/arm_c/eval.json` (5/6/2/6/12/9) and `results/arm_c_early_stopping/eval_best.json`
+  (5/8/4/7/11/5). The per-tile vertex counts equal the eval files' truth counts
+  (5/8/8/7/15/14). Each tile's `vertex` indices run 0..n-1, as the adjacency null needs.
+- **Informative tiles:** 748, 4098 and 3461 (37 vertices), exactly as the issue predicted.
+  Uninformative, reported not dropped: 3674 (C 5/5 and C2 5/5), 1851 (C2 8/8), 5017 (C2 7/7).
+- **Null over the informative tiles:** E[S] = 13.01, S_max = 18. The null support is
+  S = 8..18 (tile 4098 forces an overlap of at least 12 + 11 - 15 = 8).
+- **Smallest achievable one-sided p** (every informative tile at min(a, b)): 1.2e-4, well
+  below 0.05. The test can reject.
+- **Critical value:** P(S >= 16) = 0.027 and P(S >= 15) = 0.126, so the test rejects at
+  0.05 only if S >= 16.
+
+**Consequence for the outcome categories, noted before the joint was read.** S = 16 means an
+agreement index of (16 - 13.01) / (18 - 13.01) = 0.60. So **any rejection at p < 0.05 has an
+index >= 0.60, and outcome (b), the stated hypothesis, cannot occur on this data by
+construction.** The only reachable base outcomes are (a) (S >= 16) and (c) (S <= 15), with
+(d) as a possible qualifier. "Partial agreement" in the hypothesis's sense (index between 0
+and 0.6) is not distinguishable from chance at this n. Under (c), this is the power
+statement the interpretation plan asks for.
+
+Leave-one-informative-tile-out power, from the marginals only:
+
+| Dropped tile | E[S] | S_max | Smallest achievable p | Rejects at 0.05 only if S >= | Index at that S |
+|---|---|---|---|---|---|
+| 748 | 12.01 | 16 | 5.5e-4 | 15 | 0.75 |
+| 4098 | 4.21 | 7 | 0.013 | 7 (= S_max) | 1.00 |
+| 3461 | 9.80 | 13 | 1.9e-3 | 12 | 0.69 |
+
+Dropping 4098 leaves a test that rejects only if the two checkpoints agree perfectly on 748
+and 3461. A (d) "flip" on that drop would therefore be close to a flip by construction; it
+will be reported as such.
