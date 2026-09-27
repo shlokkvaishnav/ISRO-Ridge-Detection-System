@@ -53,8 +53,9 @@ Random seed/initialization is not controlled between this run and the original m
 ## Results
 
 **Provenance.** The Kaggle kernel clones the branch `experiment/arm-c-early-stopping`, not
-a pinned commit. The log records only `Cloning into ...`, not a SHA. The run started one
-minute after `9b37874` was pushed, so the clone was presumably `9b37874`. The only later
+a pinned commit. The log records only `Cloning into ...`, not a SHA. The log records only time since kernel start. The Kaggle API reports the kernel's last run
+at 2026-09-22 16:22:56 UTC, and `9b37874` was committed at 16:21:38 UTC. `9b37874` was
+therefore the branch head at run time, so the clone was presumably that commit. The only later
 commit touches no code. The committed checkpoints re-evaluate on CPU to exactly the
 committed `eval.json`/`eval_best.json`, per tile, checked independently by the reviewer and
 by `threshold_sweep.py`. `kaggle_train.py` now prints the cloned `HEAD` so future logs
@@ -110,9 +111,10 @@ over a random mask of the same per-tile coverage in brackets. Expected random hi
   with very different slopes cross at 0.5. Mean per-tile coverage is higher (42.5% vs
   34.4%), and per-tile hits differ (3461: 9 to 5, 748: 2 to 4).
 - **After adjusting for coverage, the epoch-7 checkpoint is somewhat weaker than the
-  merged headline model at every threshold tested** (lift 1.66–1.96× vs 1.81–2.26×). The
-  headline model's discrimination is not simply an overfitting artifact that early
-  stopping removes.
+  merged headline model at 4 of the 5 thresholds tested** (0.3–0.6; e.g. 1.96× vs 2.26×
+  lift at 0.5), and about equal at 0.7 (1.87× vs 1.81×). So early stopping does not
+  simply remove an overfitting artifact from the headline model's discrimination; over
+  most of the threshold range the overfit merged checkpoint discriminates slightly better.
 - **The epoch-60 checkpoint varies widely between runs.** It scored 70.2% (lift 2.26×) in
   the merged run and 21.1% (lift 1.12×, about chance) in this one, with identical code.
   With n=2, neither run can be called the typical one. Training to epoch 60 without early

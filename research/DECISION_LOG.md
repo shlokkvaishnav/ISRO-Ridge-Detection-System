@@ -24,7 +24,8 @@ final checkpoints were both saved from that run and scored on the same benchmark
 **Qualifiers**
 > The match is threshold-sensitive. Across thresholds 0.3–0.7, epoch-7 recall runs 56 to
 > 12 of 57, while the merged model's runs 41 to 26. After adjusting for coverage, epoch 7 is
-> somewhat weaker at every threshold tested (lift 1.66–1.96× vs 1.81–2.26×). Mean per-tile
+> somewhat weaker at 4 of the 5 thresholds tested (0.3–0.6; e.g. 1.96× vs 2.26× lift at
+> 0.5), and about equal at 0.7 (1.87× vs 1.81×). Mean per-tile
 > coverage is 42.5% vs 34.4%, and per-tile hits differ (3461: 9 to 5, 748: 2 to 4).
 
 **New confound**
