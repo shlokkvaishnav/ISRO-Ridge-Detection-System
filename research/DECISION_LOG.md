@@ -2,6 +2,41 @@
 
 Newest first.
 
+## 2026-09-27 — Arm C at the loss-optimal checkpoint: same 70.2% at the pre-registered threshold (null result), with qualifiers
+
+Issue [#5](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/5), full
+writeup in `research/arm_c_early_stopping/SPEC.md`, outputs (including a post-hoc threshold
+sweep) in `results/arm_c_early_stopping/`. One Kaggle retrain with the same code,
+hyperparameters and 6 held-out benchmark tiles as the merged run. The best-val-loss and
+final checkpoints were both saved from that run and scored on the same benchmark.
+
+**ESTABLISHED**
+> At the pre-registered 0.5 threshold, the loss-optimal checkpoint (epoch 7) gets 40/57
+> (70.2%) recall at 31.8% pixel-weighted coverage, the same as the merged headline (40/57,
+> 30.8%). About 70% recall at about 31% coverage is therefore reachable without training
+> into the overfit regime. Against the pre-registration this is the **null**, not outcome
+> (a): coverage was not lower.
+>
+> The epoch-60 checkpoint varies widely between runs: 70.2% (lift 2.26× over a random mask
+> of equal coverage) in the merged run, 12/57 = 21.1% (1.12×, about chance) in this one,
+> with identical code.
+
+**Qualifiers**
+> The match is threshold-sensitive. Across thresholds 0.3–0.7, epoch-7 recall runs 56 to
+> 12 of 57, while the merged model's runs 41 to 26. After adjusting for coverage, epoch 7 is
+> somewhat weaker at 4 of the 5 thresholds tested (0.3–0.6; e.g. 1.96× vs 2.26× lift at
+> 0.5), and about equal at 0.7 (1.87× vs 1.81×). Mean per-tile
+> coverage is 42.5% vs 34.4%, and per-tile hits differ (3461: 9 to 5, 748: 2 to 4).
+
+**New confound**
+> The best epoch is chosen by val loss on the same 6 tiles used to score recall, and val
+> loss is noisy near its minimum. That is mild selection on the benchmark. A clean estimate
+> needs an early-stopping split disjoint from the benchmark tiles.
+
+**OPEN**
+> Seed variance of both checkpoints: n=2 runs, and only one loss-optimal checkpoint has been
+> evaluated.
+
 ## 2026-09-22 — Arm C (DBR-Net-inspired) beats both classical arms on the benchmark, with a real overfitting confound attached
 
 Full numbers, per-tile breakdown, and the training-infrastructure incidents en route:
