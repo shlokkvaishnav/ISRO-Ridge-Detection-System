@@ -16,3 +16,4 @@ results/*
 !results/three_way_vertex_map/
 staging/
 !results/arm_c_checkpoint_agreement/
+!results/symmetric_tolerance/

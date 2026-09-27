@@ -2,6 +2,42 @@
 
 Newest first.
 
+## 2026-09-27 — Arm C's advantage over the classical arms depends on the hit tolerance: holds at 1 px, not detected at 2 px
+
+Issue [#14](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/14), full
+writeup in `research/symmetric_tolerance/SPEC.md`, per-vertex outputs in
+`results/symmetric_tolerance/`. The 2026-09-18 entry below said a comparison across arms
+would need a ridge-match tolerance, because slope-based arms mark flanks, not the crest.
+Every Arm C comparison since #3 had used exact pixel only. This scores A, B and both Arm C
+checkpoints under the same Euclidean tolerance rule (`within_tolerance`, #7). Each arm is
+compared with a chance baseline built at that tolerance (per-tile dilated mask coverage).
+
+**ESTABLISHED (6 tiles, 57 vertices, merged checkpoint)**
+> The gate reproduced every committed number exactly.
+> Paired sign test, C vs A and C vs B, by tolerance:
+> - **Exact pixel:** p = 0.0012 and 0.0030.
+> - **1 px:** p = 0.0047 and 0.017, outcome (a).
+> - **2 px, the pre-registered primary:** discordant 15 vs 7 for each comparison, p = 0.067.
+>   Outcome (c), "not detected".
+>
+> The 2 px verdict flips to rejection when tile 748 or 3461 is dropped, and 1 px and 2 px
+> disagree, so the pre-registered label is **(d), base (c)**.
+>
+> From 0 to 2 px the classical arms gain 12 (A) and 10 (B) hits; C gains 3. Lift over
+> tolerance-matched chance stays in C's favour (2 px: 1.82 vs 1.21 / 1.16). So the raw-hit
+> gap mostly closes under tolerance, but it is not a coverage effect.
+
+**Decision**
+> The headline "Arm C beats both classical arms" is kept, but stated as an exact-pixel and
+> 1 px result, not detected at 2 px on this benchmark.
+> Any later benchmark extension or seed study should pre-register a tolerance-based metric
+> with a tolerance-matched chance baseline, not exact pixel alone.
+
+**OPEN**
+> Whether more tiles resolve the 2 px comparison. At 2 px only 22 vertices are discordant.
+> It is also open whether the flank offset or catalog misregistration drives the tolerance
+> gains. A hit tolerance cannot separate the two.
+
 ## 2026-09-27 — Arm C at the loss-optimal checkpoint: same 70.2% at the pre-registered threshold (null result), with qualifiers
 
 Issue [#5](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/5), full

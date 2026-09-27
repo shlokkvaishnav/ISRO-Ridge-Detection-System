@@ -14,7 +14,9 @@ alternate approaches considered.
 **All three arms implemented. Arm C (deep learning) substantially beats both classical arms
 on the exact same 6-tile benchmark (70.2% recall vs 40.4%/43.9%) — a real result, matched
 at the loss-optimal (early-stopped) checkpoint at the fixed 0.5 threshold, with
-qualifiers, not yet a settled win (see below).** 120-tile
+qualifiers, not yet a settled win (see below). The win is scored at exact pixel. It still
+holds at a symmetric 1 px tolerance, but at 2 px the paired advantage is not detected
+(p = 0.067, tile-dependent), although Arm C's lift over chance stays higher (#14).** 120-tile
 pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full download, see
 `research/DECISION_LOG.md`), stratified across the Thompson et al. 2017 ridge catalog.
 
@@ -92,8 +94,31 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 >   Per-vertex claims hold per checkpoint, or where both agree: of the 21
 >   classical shared misses, both catch 12, both miss 4, and they disagree on 5.
 > - **Caveat: part of the classical "blind spot" is the exact-pixel metric.** At a 2 px
->   tolerance, the set both A and B miss shrinks from 21 to 12. Arm C still hits 8 of those
->   12, but Arm C was not itself scored at tolerance.
+>   tolerance, the set both A and B miss shrinks from 21 to 12. Scored at the same 2 px, the
+>   merged Arm C checkpoint hits 9 of those 12, and only one vertex (748 v2) is missed by
+>   every arm and both checkpoints (#14, below).
+>
+> **Arm C's advantage depends on the hit tolerance
+> ([#14](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/14),
+> `research/symmetric_tolerance/SPEC.md`): outcome (d), base (c) at the primary 2 px.** All
+> three arms were scored under the same Euclidean tolerance rule, each against a chance
+> baseline built at that tolerance (per-tile dilated mask coverage). The gate reproduced
+> every committed number exactly first.
+> - **Exact pixel (the headline above):** C beats A and B on a paired sign test (p = 0.0012,
+>   0.0030).
+> - **1 px:** still beats both, outcome (a). C 41 vs A 27 / B 30, p = 0.0047 / 0.017, with
+>   lift over tolerance-matched chance 1.97 vs 1.13 / 1.20.
+> - **2 px (pre-registered primary):** not detected, outcome (c). C 43 vs A 35 / B 35,
+>   discordant 15 vs 7 each, p = 0.067 each. The test could reject with at most 5
+>   classical-favouring discordants.
+> - **The 2 px verdict is tile-dependent.** Dropping tile 748 or 3461 makes both comparisons
+>   p < 0.05. So this is "not detected at this n", not "no difference".
+> - **Per unit of mask area, C stays ahead.** Its lift at 2 px (1.82) is above A's (1.21)
+>   and B's (1.16), and it stays above in every leave-one-tile-out drop. The classical arms
+>   gain 10-12 hits from 0 to 2 px; C gains 3. The raw-hit gap mostly closes under
+>   tolerance, but C's lift over chance does not. The lift comparison is a magnitude
+>   comparison, not a test.
+> - **The secondary checkpoint agrees:** (a) at 0 and 1 px, (c) at 2 px (p = 0.054, 0.068).
 > - **Scope.** This holds on this benchmark only: 6 tiles, 57 vertices, two checkpoints. It
 >   does not show that Arm C has no blind spots in general.
 
@@ -149,6 +174,9 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > alike: they tie only at 0.5.
 > "Beats the classical arms in this run" is the supported claim, not "is a better detector"
 > unqualified.
+> Do not claim Arm C beats the classical arms regardless of the hit tolerance. The paired
+> advantage holds at exact pixel and 1 px, but is not detected at 2 px (p = 0.067, #14),
+> and at 2 px it depends on single tiles.
 >
 > That either classical arm "works" on real lunar data in a usable sense, or that Arm B is better/worse
 > than Arm A — the aggregate numbers are close and the per-tile pattern is mixed. That an
