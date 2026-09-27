@@ -155,7 +155,7 @@ The two P columns are **descriptive and not pre-registered** (added in review ro
 `analysis.json` → `descriptive.per_tile_nulls_not_preregistered`, which also has both tails).
 **None of the three per-tile patterns is distinguishable from within-tile chance on its own.**
 Nesting on 748 happens by chance about 1 time in 5. On 4098 the "minimum possible" overlap
-of 8 is also the single most likely value under the null (P(both = 8) = 0.363). The per-tile
+of 8 is also the second most likely value under the null (mode 9, P = 0.484; P(both = 8) = 0.363, P(both ≤ 8) = 0.363). The per-tile
 pictures look opposite, but they are what small per-tile counts produce by chance.
 
 ### Outcome (d) check: leave one informative tile out
