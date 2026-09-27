@@ -296,6 +296,33 @@ def two_by_two(V, x: str, y: str, tiles) -> dict:
     return out
 
 
+def per_tile_nulls(V, x: str, y: str, tiles) -> dict:
+    """Descriptive, not pre-registered (added in review round 1): each informative tile's own
+    overlap against its within-tile hypergeometric null and its circular-shift null, both
+    tails, so a per-tile pattern ("nested", "minimal overlap") can be read against chance."""
+    out = {}
+    for t in tiles:
+        rows = tile_rows(V, t)
+        n = len(rows)
+        xs = np.array([bool(v[x]) for v in rows], dtype=int)
+        ys = np.array([bool(v[y]) for v in rows], dtype=int)
+        a, b, s = int(xs.sum()), int(ys.sum()), int((xs * ys).sum())
+        pmf = hypergeom_pmf(n, a, b)
+        kmin = max(0, a + b - n)  # pmf is zero below kmin
+        shifts = np.array([int((xs * np.roll(ys, k)).sum()) for k in range(n)])
+        out[str(t)] = {
+            "n": n, x: a, y: b, "overlap": s, "min_overlap": kmin, "max_overlap": min(a, b),
+            "E_overlap": a * b / n,
+            "hypergeom_p_upper": float(pmf[s:].sum()),
+            "hypergeom_p_lower": float(pmf[: s + 1].sum()),
+            "hypergeom_p_equal": float(pmf[s]),
+            "adjacency_p_upper": float((shifts >= s).mean()),
+            "adjacency_p_lower": float((shifts <= s).mean()),
+            "adjacency_n_shifts": n,
+        }
+    return out
+
+
 def classify(p_hyp: float, idx: float, p_adj: float, loto: dict) -> dict:
     if p_hyp < ALPHA:
         base = "a" if idx >= 0.5 else "b"
@@ -355,6 +382,8 @@ def run_analysis() -> dict:
     ab["adjacency_p_exact_descriptive"] = ab_adj["p_one_sided_exact"]
     ab["uninformative_tiles"] = [t for t in BENCHMARK if t not in ab_inf]
 
+    per_tile_p = per_tile_nulls(V, "C", "C2", inf)
+
     return {
         "note": "Deciding: primary (hypergeometric S, p, index). Pre-registered secondary: "
                 "adjacency (circular-shift) null. Outcome (d) uses LOTO and the adjacency p per "
@@ -369,6 +398,7 @@ def run_analysis() -> dict:
             "leave_one_informative_tile_out": loto,
             "AB_reference_contrast": ab,
             "AB_two_by_two_all_tiles": two_by_two(V, "A", "B", BENCHMARK),
+            "per_tile_nulls_not_preregistered": per_tile_p,
         },
     }
 

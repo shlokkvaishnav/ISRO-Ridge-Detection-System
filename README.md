@@ -87,8 +87,9 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 >   `research/arm_c_checkpoint_agreement/SPEC.md`).** Within each tile, the two
 >   checkpoints' overlap is not detectably above what their per-tile hit counts predict (15 vs 13.0
 >   expected on the 3 informative tiles, p = 0.13, agreement index 0.40; the test could only
->   reject at index >= 0.60). Per tile it is mixed: fully nested on 748 and 3461, minimal
->   overlap on 4098. Per-vertex claims hold per checkpoint, or where both agree: of the 21
+>   reject at index >= 0.60). Per tile the patterns look mixed (nested on 748 and 3461,
+>   minimal overlap on 4098), but no single tile's pattern is distinguishable from chance.
+>   Per-vertex claims hold per checkpoint, or where both agree: of the 21
 >   classical shared misses, both catch 12, both miss 4, and they disagree on 5.
 > - **Caveat: part of the classical "blind spot" is the exact-pixel metric.** At a 2 px
 >   tolerance, the set both A and B miss shrinks from 21 to 12. Arm C still hits 8 of those

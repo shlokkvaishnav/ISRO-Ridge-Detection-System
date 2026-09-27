@@ -367,6 +367,53 @@
     "B_only": 13,
     "neither": 21
    }
+  },
+  "per_tile_nulls_not_preregistered": {
+   "748": {
+    "n": 8,
+    "C": 2,
+    "C2": 4,
+    "overlap": 2,
+    "min_overlap": 0,
+    "max_overlap": 2,
+    "E_overlap": 1.0,
+    "hypergeom_p_upper": 0.21428571428571427,
+    "hypergeom_p_lower": 1.0,
+    "hypergeom_p_equal": 0.21428571428571427,
+    "adjacency_p_upper": 0.25,
+    "adjacency_p_lower": 1.0,
+    "adjacency_n_shifts": 8
+   },
+   "4098": {
+    "n": 15,
+    "C": 12,
+    "C2": 11,
+    "overlap": 8,
+    "min_overlap": 8,
+    "max_overlap": 11,
+    "E_overlap": 8.8,
+    "hypergeom_p_upper": 1.0,
+    "hypergeom_p_lower": 0.3626373626373626,
+    "hypergeom_p_equal": 0.3626373626373626,
+    "adjacency_p_upper": 1.0,
+    "adjacency_p_lower": 0.4,
+    "adjacency_n_shifts": 15
+   },
+   "3461": {
+    "n": 14,
+    "C": 9,
+    "C2": 5,
+    "overlap": 5,
+    "min_overlap": 0,
+    "max_overlap": 5,
+    "E_overlap": 3.2142857142857144,
+    "hypergeom_p_upper": 0.06293706293706294,
+    "hypergeom_p_lower": 1.0,
+    "hypergeom_p_equal": 0.06293706293706294,
+    "adjacency_p_upper": 0.21428571428571427,
+    "adjacency_p_lower": 1.0,
+    "adjacency_n_shifts": 14
+   }
   }
  }
 }
