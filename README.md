@@ -79,8 +79,17 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 >   or more was detectable at this n.
 > - **The epoch-7 checkpoint agrees less cleanly:** 15/21 against 8.3 expected, p = 0.0016,
 >   but with a 12% lower lift on the shared-miss set. That result depends on tile 4098.
-> - **The residual set is small and concentrated.** 7 vertices are missed by all three arms,
->   4 of them on tile 748.
+> - **The residual set is small and concentrated.** 7 vertices are missed by all three arms
+>   (with the merged checkpoint as Arm C), 4 of them on tile 748. Only 4 are missed by both
+>   classical arms and both Arm C checkpoints: 748 v2/v5/v7 and 3461 v0.
+> - **The Arm C column describes two checkpoints, not the method family
+>   ([#10](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/10),
+>   `research/arm_c_checkpoint_agreement/SPEC.md`).** Within each tile, the two
+>   checkpoints' overlap is not detectably above what their per-tile hit counts predict (15 vs 13.0
+>   expected on the 3 informative tiles, p = 0.13, agreement index 0.40; the test could only
+>   reject at index >= 0.60). Per tile it is mixed: fully nested on 748 and 3461, minimal
+>   overlap on 4098. Per-vertex claims hold per checkpoint, or where both agree: of the 21
+>   classical shared misses, both catch 12, both miss 4, and they disagree on 5.
 > - **Caveat: part of the classical "blind spot" is the exact-pixel metric.** At a 2 px
 >   tolerance, the set both A and B miss shrinks from 21 to 12. Arm C still hits 8 of those
 >   12, but Arm C was not itself scored at tolerance.
@@ -126,7 +135,10 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > epoch-60 checkpoint scored 70.2% and 21.1%. The loss-optimal checkpoint has one
 > evaluation, and its epoch is chosen by (noisy) val loss on the benchmark tiles
 > themselves. That is mild selection on the test set; a disjoint early-stopping split would
-> remove it.
+> remove it. Stability is also open per vertex, not only in aggregate: the two 40/57
+> checkpoints (different runs and epochs) do not detectably agree on *which* vertices they
+> catch beyond within-tile chance (#10, p = 0.13 on 3 informative tiles; "not detected",
+> not "shown independent"). Answering that needs more runs, not only more aggregate scores.
 
 **DO NOT CLAIM**
 > That Arm C is a validated, production-ready detector, or that its 70.2% recall is

@@ -15,3 +15,4 @@ results/*
 !results/arm_c_early_stopping/
 !results/three_way_vertex_map/
 staging/
+!results/arm_c_checkpoint_agreement/
