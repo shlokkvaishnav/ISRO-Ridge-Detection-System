@@ -78,7 +78,9 @@ outputs: `results/arm_c_checkpoint_agreement/gate.json` and `analysis.json`.
 
 ### Validation gate and power check: passed (`gate.json`)
 
-Recorded and committed **before** any joint C x C2 quantity was computed. This step reads
+`gate.json` and this power section were committed (`c21b06a`) before `analysis.json`
+(`4c6e4c1`). The `--analyze` code already existed at `c21b06a`, and git cannot show when the
+joint was first computed; the order claim is about the committed outputs. This step reads
 each checkpoint's per-tile hit counts separately.
 
 - **Gate:** the per-tile sums of `C` and `C2` in `vertices.json` equal the per-tile hits in
@@ -143,14 +145,18 @@ Both nulls are on the same side of 0.05 (neither rejects).
 
 ### Per tile (informative tiles)
 
-| Tile | n | C hits | C2 hits | Both | E[both] | max(both) | Where it sits |
-|---|---|---|---|---|---|---|---|
-| 748 | 8 | 2 | 4 | 2 | 1.00 | 2 | maximum: C's hits are a subset of C2's |
-| 4098 | 15 | 12 | 11 | 8 | 8.80 | 11 | **minimum possible** (12 + 11 − 15 = 8), below chance |
-| 3461 | 14 | 9 | 5 | 5 | 3.21 | 5 | maximum: C2's hits are a subset of C's |
+| Tile | n | C hits | C2 hits | Both | E[both] | min–max(both) | Where it sits | Hypergeometric P (same direction) | Adjacency P (same direction, n shifts) |
+|---|---|---|---|---|---|---|---|---|---|
+| 748 | 8 | 2 | 4 | 2 | 1.00 | 0–2 | maximum: C's hits are a subset of C2's | P(both ≥ 2) = 0.214 | 0.250 (8) |
+| 4098 | 15 | 12 | 11 | 8 | 8.80 | 8–11 | minimum possible (12 + 11 − 15 = 8) | P(both ≤ 8) = 0.363 | 0.400 (15) |
+| 3461 | 14 | 9 | 5 | 5 | 3.21 | 0–5 | maximum: C2's hits are a subset of C's | P(both ≥ 5) = 0.063 | 0.214 (14) |
 
-The pooled result is a mix of two opposite per-tile patterns. The hit sets are fully nested
-on 748 and 3461, and overlap as little as the counts allow on 4098.
+The two P columns are **descriptive and not pre-registered** (added in review round 1;
+`analysis.json` → `descriptive.per_tile_nulls_not_preregistered`, which also has both tails).
+**None of the three per-tile patterns is distinguishable from within-tile chance on its own.**
+Nesting on 748 happens by chance about 1 time in 5. On 4098 the "minimum possible" overlap
+of 8 is also the single most likely value under the null (P(both = 8) = 0.363). The per-tile
+pictures look opposite, but they are what small per-tile counts produce by chance.
 
 ### Outcome (d) check: leave one informative tile out
 
@@ -231,30 +237,31 @@ do rule out the opposite extreme the issue names (hit sets nearly identical, ind
 on the pooled informative tiles.
 
 **Per tile, which is what the (d) rule asks for:**
-- **748 and 3461:** the checkpoints' hit sets are fully nested. The checkpoint with less mask
-  area on that tile catches a subset of the other's hits. That is the maximum agreement the
-  counts allow.
-- **4098:** the overlap is the minimum the counts allow (8 of 11 possible). Each checkpoint
-  misses 3-4 vertices the other catches, mostly at opposite ends of the polyline (C only: v0-v2,
+- The patterns look opposite: nested on 748 and 3461 (the checkpoint with less mask area on
+  the tile catches a subset of the other's hits), and minimal overlap on 4098 (C only: v0-v2,
   v12; C2 only: v4, v13, v14).
-- So "which vertices Arm C catches" is stable across the two runs on two tiles and
-  run-specific on the third. With only 3 informative tiles, this analysis cannot say which
-  pattern is typical.
+- **None of them is distinguishable from within-tile chance on its own:** hypergeometric
+  P = 0.21 (748), 0.063 (3461) and P(overlap ≤ 8) = 0.36 (4098); adjacency P = 0.25, 0.21
+  and 0.40 (descriptive, not pre-registered).
+- So the per-tile view is not evidence of per-tile stability on some tiles or instability on
+  others. Like the pooled test, it detects nothing at this n.
 
 **What this establishes (6 tiles, 57 vertices, 2 checkpoints, exact-pixel metric)**
 - The Arm C column of the three-way map (PR #9) is not detectably shared between the two
   checkpoints beyond what their per-tile hit counts predict. Per-vertex attribution to
   "Arm C" rather than to a checkpoint is not supported on this evidence.
 - It is "not detected", not "independent". The pooled test could only reject at an index
-  of 0.60 or more, and the per-tile picture includes two fully nested tiles.
+  of 0.60 or more. The per-tile patterns (nested on two tiles, minimal overlap on one) are
+  each within chance too.
 - Claims about specific vertices hold at checkpoint level. Among the 21 classical shared
   misses, the checkpoints agree on 16 (12 caught by both, 4 missed by both) and disagree on 5.
 
 **What it does not establish**
 - **Run vs epoch.** C is run 1 at epoch 60 and C2 is run 2 at epoch 7. Disagreement could
   come from either or both.
-- **That the nesting on 748/3461 is a method property.** It is two tiles, and it follows
-  which checkpoint has more mask area on that tile, which was noticed after the fact.
+- **That the nesting on 748/3461 means anything.** It is two tiles, neither distinguishable
+  from chance (P = 0.21 and 0.063). It follows which checkpoint has more mask area on that
+  tile, which was noticed after the fact.
 - **Anything about more than two runs.** n = 2 checkpoints.
 - **A/B.** The reference contrast is descriptive; it suggests the classical arms' overlap is
   also at chance level, but that was not the question here.
@@ -269,9 +276,10 @@ on the pooled informative tiles.
 ## Decision
 
 **Implementer's self-assessment: MERGE, as an analysis result (a null, qualified per tile).**
-- The validation gate reproduced both eval files exactly. The power check, including the
-  consequence that (b) was unreachable, was committed (`c21b06a`) before the joint table
-  was computed (`4c6e4c1`).
+- The validation gate reproduced both eval files exactly. `gate.json` and the power section,
+  including the consequence that (b) was unreachable, were committed (`c21b06a`) before
+  `analysis.json` (`4c6e4c1`). The `--analyze` code already existed at `c21b06a`; git cannot
+  show when the joint was first computed.
 - The deciding statistic is exact, cross-checked by Monte Carlo and by `scipy`. The
   adjacency null is exhaustively enumerated.
 - The outcome is labelled against the pre-registered (a)-(e) definitions, including the (d)
@@ -289,3 +297,13 @@ entry: the plan calls for one only under outcome (e).
   non-degenerate epoch-60 checkpoint from run 2 is ever available.
 - Whether the coverage-nesting pattern on 748/3461 holds on more tiles: does the checkpoint
   with more mask area on a tile consistently catch a superset of the other's hits?
+
+## Amendments
+
+**Review round 1 (PR #12).** The reviewer found an unsupported per-tile claim: the
+Interpretation read "stable across the two runs on two tiles and run-specific on the third"
+from per-tile patterns that are each within chance. That sentence is replaced with a
+chance-calibrated statement. Per-tile hypergeometric and adjacency P-values were added to
+`agreement.py` and `analysis.json` as descriptive, not pre-registered. Every other number is
+unchanged: the deciding metrics, the outcome label ((d), base (c)) and the README
+conclusions do not change. The commit-order claim is reworded to what git can show.
