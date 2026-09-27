@@ -113,3 +113,179 @@ Leave-one-informative-tile-out power, from the marginals only:
 Dropping 4098 leaves a test that rejects only if the two checkpoints agree perfectly on 748
 and 3461. A (d) "flip" on that drop would therefore be close to a flip by construction; it
 will be reported as such.
+
+### Deciding metrics: C (run 1, epoch 60) vs C2 (run 2, epoch 7), informative tiles only
+
+| Metric | Value |
+|---|---|
+| Observed overlap S (vertices both checkpoints hit) | **15** |
+| E[S] under the within-tile hypergeometric null | 13.01 |
+| S_max = Σ min(a_t, b_t) | 18 |
+| Exact one-sided p = P(S >= 15) | **0.126** |
+| Monte Carlo cross-check (200,000 draws) | p = 0.126, mean S = 13.01 |
+| Normalized agreement index (S − E) / (S_max − E) | **0.40** |
+
+`scipy.stats.hypergeom` convolved independently gives the same p (0.12600) and E[S].
+
+### Pre-registered secondary: adjacency (circular-shift) null
+
+C2's hit sequence was circularly shifted along polyline vertex order, independently on each
+informative tile. All 8 × 15 × 14 = 1,680 shift combinations were enumerated exactly.
+
+| | Value |
+|---|---|
+| E[S] under the shift null | 13.01 |
+| Exact one-sided p = P(S >= 15) | **0.179** |
+| Convolution of the per-tile shift distributions (check) | 0.179 |
+| Monte Carlo (20,000 draws) | 0.179 |
+
+Both nulls are on the same side of 0.05 (neither rejects).
+
+### Per tile (informative tiles)
+
+| Tile | n | C hits | C2 hits | Both | E[both] | max(both) | Where it sits |
+|---|---|---|---|---|---|---|---|
+| 748 | 8 | 2 | 4 | 2 | 1.00 | 2 | maximum: C's hits are a subset of C2's |
+| 4098 | 15 | 12 | 11 | 8 | 8.80 | 11 | **minimum possible** (12 + 11 − 15 = 8), below chance |
+| 3461 | 14 | 9 | 5 | 5 | 3.21 | 5 | maximum: C2's hits are a subset of C's |
+
+The pooled result is a mix of two opposite per-tile patterns. The hit sets are fully nested
+on 748 and 3461, and overlap as little as the counts allow on 4098.
+
+### Outcome (d) check: leave one informative tile out
+
+| Dropped | S | E[S] | S_max | p (hypergeometric) | index | p (adjacency, descriptive) |
+|---|---|---|---|---|---|---|
+| 748 | 13 | 12.01 | 16 | 0.330 | 0.25 | 0.357 |
+| **4098** | **7** | 4.21 | 7 | **0.013** | 1.00 | 0.054 |
+| 3461 | 10 | 9.80 | 13 | 0.611 | 0.06 | 0.600 |
+
+Dropping 4098 flips the hypergeometric p across 0.05 (0.126 → 0.013), so the pre-registered
+(d) rule fires. As recorded in the power check before the joint was read, 7 is that subset's
+only rejectable value: p < 0.05 there requires perfect nesting on both remaining tiles. The
+adjacency null on the same subset gives p = 0.054, on the other side of 0.05 (descriptive;
+the (d) rule compares the two nulls on the full informative set only).
+
+### Descriptive: 2×2 C × C2, all 6 tiles
+
+| Tile | Both | C only | C2 only | Neither |
+|---|---|---|---|---|
+| 3674 | 5 | 0 | 0 | 0 |
+| 1851 | 6 | 0 | 2 | 0 |
+| 748 | 2 | 0 | 2 | 4 |
+| 5017 | 6 | 0 | 1 | 0 |
+| 4098 | 8 | 4 | 3 | 0 |
+| 3461 | 5 | 4 | 0 | 5 |
+| **Pooled** | **32** | **8** | **8** | **9** |
+
+Pooled raw agreement is 41/57 (72%), but 3674, 1851 and 5017 contribute agreement fixed by
+the counts alone.
+
+### Descriptive: vertices where the checkpoints disagree (tile vN, polyline order)
+
+- **C only (8):** 4098 v0, v1, v2, v12; 3461 v1, v3, v11, v12.
+- **C2 only (8):** 1851 v0, v6; 748 v0, v4; 5017 v2; 4098 v4, v13, v14.
+- **Among the 21 vertices both classical arms miss:** C hits 14, C2 hits 15, both hit 12,
+  either hits 17. The checkpoints disagree on 5: 4098 v2 and 3461 v12 (C only); 1851 v0,
+  748 v4 and 4098 v13 (C2 only). The 4 vertices missed by A, B, C and C2 are 748 v2, v5, v7
+  and 3461 v0.
+
+### Descriptive: A/B reference contrast (same statistic and index)
+
+All 6 tiles are informative for the A/B pair (neither arm hits all or none of any tile).
+
+| Pair | Tiles | S | E[S] | S_max | p (hypergeometric) | MC p | index | p (adjacency) |
+|---|---|---|---|---|---|---|---|---|
+| C vs C2 | 748, 4098, 3461 | 15 | 13.01 | 18 | 0.126 | 0.126 | 0.40 | 0.179 |
+| A vs B | all 6 | 12 | 10.47 | 19 | 0.275 | 0.276 | 0.18 | 0.264 |
+
+Against a chance baseline, A/B agreement is also indistinguishable from within-tile chance
+(index 0.18). README's "genuinely complementary" reading of the 12/57 both-hit count is
+consistent with that: the two classical arms overlap about as much as their per-tile hit
+counts predict. The two C checkpoints sit higher on the index (0.40 vs 0.18) but neither
+pair is detectably above chance. The contrast is descriptive and does not decide the outcome.
+
+### Descriptive: a correction to the issue's coverage confound
+
+The issue says C2's mask coverage is higher than C's on every tile. `vertices.json` shows it
+is not: on 3461, C2 covers 13.1% against C's 32.2%. The other five tiles do have C2 > C
+(4098: 24.8% vs 20.1%). The nesting follows coverage on both nested tiles: on 748 the
+higher-coverage checkpoint (C2, 34.7% vs 15.2%) catches a superset of C's hits, and on
+3461 the higher-coverage checkpoint (C) catches a superset of C2's. This is noticed after
+the fact and not tested.
+
+## Interpretation
+
+**Outcome: (d), with base outcome (c).** Pooled over the three informative tiles, the two
+checkpoints' overlap cannot be told apart from within-tile chance (S = 15 against 13.01,
+p = 0.126; adjacency null p = 0.179). The (c) result flips to p = 0.013 when tile 4098 is
+dropped, so per the pre-registered rule this is a single-tile-dependent result and is
+reported per tile, not generalized.
+
+**Against the stated hypothesis.** The hypothesis predicted (b): agreement above chance but
+partial. (b) was unreachable at this n by construction, as the power check recorded before
+the joint was read: any rejection needed S >= 16, an index of at least 0.60. The observed
+index (0.40) is in the "partial" range the hypothesis describes, but it is not
+distinguishable from 0. The data therefore neither support nor refute the hypothesis. They
+do rule out the opposite extreme the issue names (hit sets nearly identical, index near 1)
+on the pooled informative tiles.
+
+**Per tile, which is what the (d) rule asks for:**
+- **748 and 3461:** the checkpoints' hit sets are fully nested. The checkpoint with less mask
+  area on that tile catches a subset of the other's hits. That is the maximum agreement the
+  counts allow.
+- **4098:** the overlap is the minimum the counts allow (8 of 11 possible). Each checkpoint
+  misses 3-4 vertices the other catches, mostly at opposite ends of the polyline (C only: v0-v2,
+  v12; C2 only: v4, v13, v14).
+- So "which vertices Arm C catches" is stable across the two runs on two tiles and
+  run-specific on the third. With only 3 informative tiles, this analysis cannot say which
+  pattern is typical.
+
+**What this establishes (6 tiles, 57 vertices, 2 checkpoints, exact-pixel metric)**
+- The Arm C column of the three-way map (PR #9) is not detectably shared between the two
+  checkpoints beyond what their per-tile hit counts predict. Per-vertex attribution to
+  "Arm C" rather than to a checkpoint is not supported on this evidence.
+- It is "not detected", not "independent". The pooled test could only reject at an index
+  of 0.60 or more, and the per-tile picture includes two fully nested tiles.
+- Claims about specific vertices hold at checkpoint level. Among the 21 classical shared
+  misses, the checkpoints agree on 16 (12 caught by both, 4 missed by both) and disagree on 5.
+
+**What it does not establish**
+- **Run vs epoch.** C is run 1 at epoch 60 and C2 is run 2 at epoch 7. Disagreement could
+  come from either or both.
+- **That the nesting on 748/3461 is a method property.** It is two tiles, and it follows
+  which checkpoint has more mask area on that tile, which was noticed after the fact.
+- **Anything about more than two runs.** n = 2 checkpoints.
+- **A/B.** The reference contrast is descriptive; it suggests the classical arms' overlap is
+  also at chance level, but that was not the question here.
+
+**Per interpretation plan (c), qualified by (d):**
+- README's three-way map entry is scoped to checkpoints: the Arm C column describes the two
+  checkpoints, and per-vertex claims are stated per checkpoint (or where both agree).
+- README's OPEN seed-stability item is extended: the per-vertex question needs more runs,
+  not only aggregate recall.
+- Nothing is generalized from the tile-4098 dependence or from the nesting on 748/3461.
+
+## Decision
+
+**Implementer's self-assessment: MERGE, as an analysis result (a null, qualified per tile).**
+- The validation gate reproduced both eval files exactly. The power check, including the
+  consequence that (b) was unreachable, was committed (`c21b06a`) before the joint table
+  was computed (`4c6e4c1`).
+- The deciding statistic is exact, cross-checked by Monte Carlo and by `scipy`. The
+  adjacency null is exhaustively enumerated.
+- The outcome is labelled against the pre-registered (a)-(e) definitions, including the (d)
+  trigger and why that trigger sits at the edge of the subset's power.
+- One factual error in the issue (C2 coverage "higher on every tile") is corrected in the
+  descriptive section, not silently.
+
+README.md is updated per interpretation plan (c), qualified by (d). No DECISION_LOG.md
+entry: the plan calls for one only under outcome (e).
+
+**Natural follow-ups** (not done here; each would be a new issue):
+- More Arm C runs (different seeds, same epoch-selection rule) to estimate per-vertex
+  stability directly, rather than from two checkpoints that also differ in epoch.
+- The within-run pair (run 2, epoch 7 vs epoch 60) to isolate epoch from run, if a
+  non-degenerate epoch-60 checkpoint from run 2 is ever available.
+- Whether the coverage-nesting pattern on 748/3461 holds on more tiles: does the checkpoint
+  with more mask area on a tile consistently catch a superset of the other's hits?
