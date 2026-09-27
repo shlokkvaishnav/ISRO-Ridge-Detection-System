@@ -1,0 +1,184 @@
+{
+  "AB": {
+    "reference_per_tile": {
+      "3674": {
+        "A": 2,
+        "B": 3
+      },
+      "1851": {
+        "A": 1,
+        "B": 3
+      },
+      "748": {
+        "A": 3,
+        "B": 2
+      },
+      "5017": {
+        "A": 4,
+        "B": 2
+      },
+      "4098": {
+        "A": 6,
+        "B": 5
+      },
+      "3461": {
+        "A": 7,
+        "B": 10
+      }
+    },
+    "observed_per_tile": {
+      "3674": {
+        "A": 2,
+        "B": 3
+      },
+      "1851": {
+        "A": 1,
+        "B": 3
+      },
+      "748": {
+        "A": 3,
+        "B": 2
+      },
+      "5017": {
+        "A": 4,
+        "B": 2
+      },
+      "4098": {
+        "A": 6,
+        "B": 5
+      },
+      "3461": {
+        "A": 7,
+        "B": 10
+      }
+    },
+    "reference_split": {
+      "both": 12,
+      "A_only": 11,
+      "B_only": 13,
+      "neither": 21
+    },
+    "observed_split": {
+      "both": 12,
+      "A_only": 11,
+      "B_only": 13,
+      "neither": 21
+    },
+    "passed": true
+  },
+  "C": {
+    "reference_file": "results/arm_c/eval.json",
+    "reference_per_tile": {
+      "3674": {
+        "hits": 5,
+        "truth": 5
+      },
+      "1851": {
+        "hits": 6,
+        "truth": 8
+      },
+      "748": {
+        "hits": 2,
+        "truth": 8
+      },
+      "5017": {
+        "hits": 6,
+        "truth": 7
+      },
+      "4098": {
+        "hits": 12,
+        "truth": 15
+      },
+      "3461": {
+        "hits": 9,
+        "truth": 14
+      }
+    },
+    "observed_per_tile": {
+      "3674": {
+        "hits": 5,
+        "truth": 5
+      },
+      "1851": {
+        "hits": 6,
+        "truth": 8
+      },
+      "748": {
+        "hits": 2,
+        "truth": 8
+      },
+      "5017": {
+        "hits": 6,
+        "truth": 7
+      },
+      "4098": {
+        "hits": 12,
+        "truth": 15
+      },
+      "3461": {
+        "hits": 9,
+        "truth": 14
+      }
+    },
+    "coverage_pct_max_abs_diff": 0.0,
+    "passed": true
+  },
+  "C2": {
+    "reference_file": "results/arm_c_early_stopping/eval_best.json",
+    "reference_per_tile": {
+      "3674": {
+        "hits": 5,
+        "truth": 5
+      },
+      "1851": {
+        "hits": 8,
+        "truth": 8
+      },
+      "748": {
+        "hits": 4,
+        "truth": 8
+      },
+      "5017": {
+        "hits": 7,
+        "truth": 7
+      },
+      "4098": {
+        "hits": 11,
+        "truth": 15
+      },
+      "3461": {
+        "hits": 5,
+        "truth": 14
+      }
+    },
+    "observed_per_tile": {
+      "3674": {
+        "hits": 5,
+        "truth": 5
+      },
+      "1851": {
+        "hits": 8,
+        "truth": 8
+      },
+      "748": {
+        "hits": 4,
+        "truth": 8
+      },
+      "5017": {
+        "hits": 7,
+        "truth": 7
+      },
+      "4098": {
+        "hits": 11,
+        "truth": 15
+      },
+      "3461": {
+        "hits": 5,
+        "truth": 14
+      }
+    },
+    "coverage_pct_max_abs_diff": 7.105427357601002e-15,
+    "passed": true
+  },
+  "all_passed": true
+}
