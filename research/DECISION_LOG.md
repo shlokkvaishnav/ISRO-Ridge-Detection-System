@@ -2,6 +2,38 @@
 
 Newest first.
 
+## 2026-09-27 — Arm C's 70.2% holds at the loss-optimal checkpoint; the overfit final checkpoint does not
+
+Issue [#5](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/5), full
+writeup in `research/arm_c_early_stopping/SPEC.md`, outputs in
+`results/arm_c_early_stopping/`. One Kaggle retrain with the same code, hyperparameters and
+6 held-out benchmark tiles as the merged run. Both the best-val-loss checkpoint and the
+final checkpoint were saved from the same run and scored on the same benchmark.
+
+**ESTABLISHED**
+> The best-val-loss checkpoint (epoch 7) gets 40/57 (70.2%) recall at 31.8% coverage, the
+> same recall as the merged headline (40/57, 30.8%). The final checkpoint from the same run
+> (epoch 60) gets only 12/57 (21.1%) at 18.9%. Arithmetic rechecked from per-tile numbers.
+>
+> The epoch-60 checkpoint is unstable across runs: 70.2% in the merged run, 21.1% here,
+> with identical code. The merged 70.2% was a favourable draw from an overfit checkpoint.
+> The number stands, but it now rests on the loss-optimal checkpoint. That checkpoint
+> becomes Arm C's reported artifact (`results/arm_c_early_stopping/model_best.pt`).
+
+**Not supported**
+> The pre-registered hypothesis that the loss-optimal checkpoint would show *lower*
+> coverage: it is 31.8% vs 30.8%, essentially the same.
+
+**New confound**
+> The best epoch is chosen by val loss on the same 6 tiles used to score recall. That is
+> mild selection on the benchmark (a BCE-loss criterion, one epoch out of 60). A clean
+> estimate needs an early-stopping split disjoint from the benchmark tiles.
+
+**OPEN**
+> Seed variance of the *best* checkpoint: two runs, two different best epochs (4 and 7),
+> and only one of them evaluated. Per-tile hits also shift (3461: 9 to 5, 748: 2 to 4)
+> while the total stays at 40.
+
 ## 2026-09-22 — Arm C (DBR-Net-inspired) beats both classical arms on the benchmark, with a real overfitting confound attached
 
 Full numbers, per-tile breakdown, and the training-infrastructure incidents en route:

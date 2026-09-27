@@ -1,0 +1,43 @@
+{
+  "recall": 0.21052631578947367,
+  "recall_frac": "12/57",
+  "coverage_pct": 18.853287078512476,
+  "per_tile": [
+    {
+      "id": 3674,
+      "hits": 2,
+      "truth": 5,
+      "coverage_pct": 33.918552036199095
+    },
+    {
+      "id": 1851,
+      "hits": 3,
+      "truth": 8,
+      "coverage_pct": 23.758530183727036
+    },
+    {
+      "id": 748,
+      "hits": 0,
+      "truth": 8,
+      "coverage_pct": 6.506410256410256
+    },
+    {
+      "id": 5017,
+      "hits": 2,
+      "truth": 7,
+      "coverage_pct": 25.219600725952812
+    },
+    {
+      "id": 4098,
+      "hits": 1,
+      "truth": 15,
+      "coverage_pct": 10.967887833559475
+    },
+    {
+      "id": 3461,
+      "hits": 4,
+      "truth": 14,
+      "coverage_pct": 22.780339184124674
+    }
+  ]
+}

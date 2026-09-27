@@ -12,4 +12,5 @@ data/tiles/*/
 results/*
 !results/arm_c_random_split/
 !results/arm_c/
+!results/arm_c_early_stopping/
 staging/

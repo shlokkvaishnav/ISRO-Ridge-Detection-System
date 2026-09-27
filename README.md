@@ -12,8 +12,9 @@ alternate approaches considered.
 ## Status
 
 **All three arms implemented. Arm C (deep learning) substantially beats both classical arms
-on the exact same 6-tile benchmark (70.2% recall vs 40.4%/43.9%) — a real result, with a
-real, unresolved overfitting confound attached (see below), not yet a settled win.** 120-tile
+on the exact same 6-tile benchmark (70.2% recall vs 40.4%/43.9%) — a real result, now
+reproduced at the loss-optimal (early-stopped) checkpoint, not yet a settled win (see
+below).** 120-tile
 pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full download, see
 `research/DECISION_LOG.md`), stratified across the Thompson et al. 2017 ridge catalog.
 
@@ -52,8 +53,12 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > real, acknowledged supervision-quality gap. **A real confound attached to this number**:
 > training history shows clear overfitting past epoch ~4-10 (val loss bottoms out at epoch 4,
 > rises 2-6x by epoch 60 while train loss keeps falling), no early stopping was used, and
-> only the final (overfit) checkpoint was saved — whether the loss-optimal checkpoint would
-> give a similar, better, or worse recall number is untested. Full numbers, per-tile
+> only the final (overfit) checkpoint was saved. **A retrain that saved both checkpoints
+> ([#5](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/5)) resolves
+> this in the result's favour:** the loss-optimal checkpoint (epoch 7) gets the same 40/57
+> (70.2%) at 31.8% coverage, while that run's own epoch-60 checkpoint collapses to 12/57
+> (21.1%). The number stands, but it rests on the loss-optimal checkpoint, not the overfit
+> final one (`research/arm_c_early_stopping/SPEC.md`). Full numbers, per-tile
 > breakdown, and the five infrastructure bugs hit getting a Kaggle GPU run working at all:
 > `research/arm_c_deep_learning/SPEC.md`.
 
@@ -69,10 +74,6 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > continued classical-arm tuning — Arm C's result below is consistent with this, not
 > conclusive proof given its overfitting confound. Still needs the per-morphology-class/
 > degradation-bucket breakdown `plan.md` calls for, not just an aggregate number.
->
-> That the loss-optimal (early-stopped) Arm C checkpoint would give a similar, better, or
-> worse recall/coverage than the overfit final checkpoint's 70.2%/30.8% — the single most
-> direct open question about the headline Arm C result below, not yet tested.
 
 **OPEN**
 > Whether `meijering`/`sato` (Arm B's other two methods, not yet tried) perform
@@ -89,12 +90,17 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > Whether these findings hold across all 120 pilot tiles or just the 6 used for the
 > head-to-head benchmark so far.
 >
-> Whether Arm C's result is stable across seeds/reruns — single run only, no variance
-> reported, unlike the classical arms' deterministic numbers.
+> Whether Arm C's loss-optimal-checkpoint result is stable across seeds. The final
+> checkpoint is known to be unstable (70.2% in one run, 21.1% in another). The best
+> checkpoint has one evaluation, and its epoch is chosen by val loss on the benchmark tiles
+> themselves. That is mild selection on the test set; a disjoint early-stopping split would
+> remove it.
 
 **DO NOT CLAIM**
 > That Arm C is a validated, production-ready detector, or that its 70.2% recall is
-> guaranteed to reproduce on a rerun — the overfitting confound is real and unresolved.
+> guaranteed to reproduce on a rerun. It reproduced once at the loss-optimal checkpoint,
+> but best-epoch selection uses the benchmark tiles, and an overfit checkpoint from the
+> same code scored 21.1%.
 > "Beats the classical arms in this run" is the supported claim, not "is a better detector"
 > unqualified.
 >

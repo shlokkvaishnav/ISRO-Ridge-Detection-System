@@ -34,3 +34,66 @@ The already-merged final-checkpoint result (results/arm_c/eval.json) is the base
 
 **Confounds considered**
 Random seed/initialization is not controlled between this run and the original merged run beyond what src/deep/train.py already does (documented as an open reproducibility gap in the merged PR) -- any difference found could be seed variance, not purely an early-stopping effect. Ideally this experiment would also report a second same-seed rerun of the ORIGINAL (final-checkpoint) setup to establish how much of any difference is attributable to seed noise vs. the early-stopping change itself, but that doubles the Kaggle compute cost for this single experiment -- flagged as a scope decision to make explicitly, not silently skipped.
+
+## Amendments
+
+- **2026-09-22, design change before the run:** instead of a separate retrain compared
+  against the merged run, `src/deep/train.py` now tracks the best-val-loss epoch and saves
+  `model_best.pt` alongside the final `model.pt` **within one training run**, and
+  `kaggle_train.py` evaluates both. Both checkpoints then share one seed and one trajectory,
+  so the best-vs-final comparison is free of the seed-variance confound the issue flagged.
+  Same architecture, hyperparameters, 60 epochs and the same 6 held-out benchmark tiles
+  (`val_ids.json` is identical to `results/arm_c/val_ids.json`).
+
+## Results
+
+Kaggle GPU run of commit `9b37874` (the kernel clones this branch; the clone's HEAD is
+recorded in `results/arm_c_early_stopping/kaggle_run.log`). All outputs are in
+`results/arm_c_early_stopping/`.
+
+Validation loss (on the 6 held-out benchmark tiles) bottoms out at **epoch 7 (0.553)**, then
+rises to 1.451 by epoch 60. The merged run's minimum was epoch 4 (0.545), rising to 1.139,
+so the two trajectories are similar in shape.
+
+| Checkpoint | Recall (57 vertices, 6 tiles) | Coverage | File |
+|---|---|---|---|
+| Merged run, final (epoch 60), earlier run, baseline | 40/57 = 70.2% | 30.8% | `results/arm_c/eval.json` |
+| **This run, best val loss (epoch 7)** | **40/57 = 70.2%** | **31.8%** | `eval_best.json` |
+| This run, final (epoch 60) | 12/57 = 21.1% | 18.9% | `eval.json` |
+
+Per-tile hits (truth in brackets), recomputed by hand from the JSON files:
+
+| Tile | 3674 (5) | 1851 (8) | 748 (8) | 5017 (7) | 4098 (15) | 3461 (14) | Sum |
+|---|---|---|---|---|---|---|---|
+| Merged final | 5 | 6 | 2 | 6 | 12 | 9 | 40 |
+| This run, best (ep 7) | 5 | 8 | 4 | 7 | 11 | 5 | 40 |
+| This run, final (ep 60) | 2 | 3 | 0 | 2 | 1 | 4 | 12 |
+
+## Interpretation
+
+- **The loss-optimal checkpoint matches the headline recall** (40/57 vs 40/57), with
+  coverage essentially unchanged (31.8% vs 30.8%). This is outcome (a) from the issue:
+  similar recall, and the pre-registered hypothesis that coverage would be *lower* is
+  **not supported**.
+- **The overfit final checkpoint is not reliable.** Within one run, going from epoch 7 to
+  epoch 60 cut recall from 70.2% to 21.1%. The merged run's epoch-60 checkpoint scored
+  70.2%, so the epoch-60 result swings from 21% to 70% between two runs of identical code.
+  The merged headline came from an unstable checkpoint that happened to land well. The
+  number itself survives, but only because the loss-optimal checkpoint reproduces it.
+- **The aggregate match partly hides per-tile differences.** Tile 3461 drops from 9/14 to
+  5/14 and 748 rises from 2/8 to 4/8. With 57 vertices, a tie at 40 should be read as
+  "about the same level", not as an exact replication.
+- **New confound, disclosed rather than hidden:** the "best" epoch is chosen by val loss
+  on the same 6 tiles used to score recall. That is selection on the benchmark, so the
+  best-checkpoint number is mildly optimistic. It is mild because selection uses BCE loss,
+  not recall, and picks one of 60 epochs. A clean fix needs a separate validation split for
+  early stopping, disjoint from the 6 benchmark tiles.
+
+## Decision
+
+Implementer's self-assessment: **MERGE**. The question is answered: the loss-optimal
+checkpoint gives 70.2% recall at 31.8% coverage, and it replaces the final checkpoint as
+the reported Arm C artifact (`results/arm_c_early_stopping/model_best.pt`). Findings tiers
+are updated in `README.md` and `research/DECISION_LOG.md`. The early-stopping selection
+confound and seed variance of the best checkpoint are left open as follow-up questions,
+not claimed as resolved.
