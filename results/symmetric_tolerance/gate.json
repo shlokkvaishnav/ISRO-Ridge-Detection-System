@@ -1,0 +1,356 @@
+{
+  "checks": {
+    "1_C_exact_per_tile": {
+      "reference_file": "results/arm_c/eval.json",
+      "reference": {
+        "3674": {
+          "hits": 5,
+          "truth": 5
+        },
+        "1851": {
+          "hits": 6,
+          "truth": 8
+        },
+        "748": {
+          "hits": 2,
+          "truth": 8
+        },
+        "5017": {
+          "hits": 6,
+          "truth": 7
+        },
+        "4098": {
+          "hits": 12,
+          "truth": 15
+        },
+        "3461": {
+          "hits": 9,
+          "truth": 14
+        }
+      },
+      "observed": {
+        "3674": {
+          "hits": 5,
+          "truth": 5
+        },
+        "1851": {
+          "hits": 6,
+          "truth": 8
+        },
+        "748": {
+          "hits": 2,
+          "truth": 8
+        },
+        "5017": {
+          "hits": 6,
+          "truth": 7
+        },
+        "4098": {
+          "hits": 12,
+          "truth": 15
+        },
+        "3461": {
+          "hits": 9,
+          "truth": 14
+        }
+      },
+      "passed": true
+    },
+    "1_C2_exact_per_tile": {
+      "reference_file": "results/arm_c_early_stopping/eval_best.json",
+      "reference": {
+        "3674": {
+          "hits": 5,
+          "truth": 5
+        },
+        "1851": {
+          "hits": 8,
+          "truth": 8
+        },
+        "748": {
+          "hits": 4,
+          "truth": 8
+        },
+        "5017": {
+          "hits": 7,
+          "truth": 7
+        },
+        "4098": {
+          "hits": 11,
+          "truth": 15
+        },
+        "3461": {
+          "hits": 5,
+          "truth": 14
+        }
+      },
+      "observed": {
+        "3674": {
+          "hits": 5,
+          "truth": 5
+        },
+        "1851": {
+          "hits": 8,
+          "truth": 8
+        },
+        "748": {
+          "hits": 4,
+          "truth": 8
+        },
+        "5017": {
+          "hits": 7,
+          "truth": 7
+        },
+        "4098": {
+          "hits": 11,
+          "truth": 15
+        },
+        "3461": {
+          "hits": 5,
+          "truth": 14
+        }
+      },
+      "passed": true
+    },
+    "2_AB_vertex_for_vertex": {
+      "reference_file": "results/three_way_vertex_map/vertices.json",
+      "columns": [
+        "A",
+        "B",
+        "A_tol1",
+        "A_tol2",
+        "B_tol1",
+        "B_tol2"
+      ],
+      "vertex_positions_identical": true,
+      "mismatches": [],
+      "per_tile_exact_reference_DECISION_LOG": {
+        "3674": {
+          "A": 2,
+          "B": 3
+        },
+        "1851": {
+          "A": 1,
+          "B": 3
+        },
+        "748": {
+          "A": 3,
+          "B": 2
+        },
+        "5017": {
+          "A": 4,
+          "B": 2
+        },
+        "4098": {
+          "A": 6,
+          "B": 5
+        },
+        "3461": {
+          "A": 7,
+          "B": 10
+        }
+      },
+      "per_tile_exact_observed": {
+        "3674": {
+          "A": 2,
+          "B": 3
+        },
+        "1851": {
+          "A": 1,
+          "B": 3
+        },
+        "748": {
+          "A": 3,
+          "B": 2
+        },
+        "5017": {
+          "A": 4,
+          "B": 2
+        },
+        "4098": {
+          "A": 6,
+          "B": 5
+        },
+        "3461": {
+          "A": 7,
+          "B": 10
+        }
+      },
+      "totals_observed": {
+        "A": 23,
+        "B": 25,
+        "A_tol1": 27,
+        "A_tol2": 35,
+        "B_tol1": 30,
+        "B_tol2": 35
+      },
+      "passed": true
+    },
+    "2b_C_C2_exact_vertex_for_vertex_vs_7": {
+      "mismatches": [],
+      "passed": true
+    },
+    "2c_issue7_tolerance_figures": {
+      "reference": {
+        "0px": {
+          "A_or_B_misses": 21
+        },
+        "1px": {
+          "A_hits": 27,
+          "B_hits": 30,
+          "A_or_B_misses": 16
+        },
+        "2px": {
+          "A_hits": 35,
+          "B_hits": 35,
+          "A_or_B_misses": 12
+        }
+      },
+      "observed": {
+        "0px": {
+          "A_hits": 23,
+          "B_hits": 25,
+          "A_and_B_miss": 21
+        },
+        "1px": {
+          "A_hits": 27,
+          "B_hits": 30,
+          "A_and_B_miss": 16
+        },
+        "2px": {
+          "A_hits": 35,
+          "B_hits": 35,
+          "A_and_B_miss": 12
+        }
+      },
+      "passed": true
+    },
+    "3_per_tile_coverage": {
+      "reference_file": "results/three_way_vertex_map/vertices.json",
+      "abs_diff": {
+        "3674": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        },
+        "1851": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        },
+        "748": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        },
+        "5017": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        },
+        "4098": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        },
+        "3461": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0,
+          "C2": 0.0
+        }
+      },
+      "max_abs_diff": 0.0,
+      "dilated_coverage_at_0px_equals_coverage": true,
+      "passed": true
+    },
+    "3b_exact_pixel_chance_reproduces_6_7": {
+      "C": {
+        "expected_0px": 17.7173,
+        "lift_0px": 2.2577,
+        "issue7_expected_sum_shared_miss_plus_caught": 17.7173,
+        "issue6_random_mask_expected_hits": 17.72,
+        "issue6_lift": 2.26,
+        "passed": true
+      },
+      "C2": {
+        "expected_0px": 20.4211,
+        "lift_0px": 1.9588,
+        "issue7_expected_sum_shared_miss_plus_caught": 20.4211,
+        "issue6_random_mask_expected_hits": 20.42,
+        "issue6_lift": 1.96,
+        "passed": true
+      },
+      "passed": true
+    },
+    "dilation_matches_within_tolerance_at_every_vertex": {
+      "passed": true
+    }
+  },
+  "gate_passed": true,
+  "marginal_hits": {
+    "0px": {
+      "A": 23,
+      "B": 25,
+      "C": 40,
+      "C2": 40
+    },
+    "1px": {
+      "A": 27,
+      "B": 30,
+      "C": 41,
+      "C2": 41
+    },
+    "2px": {
+      "A": 35,
+      "B": 35,
+      "C": 43,
+      "C2": 44
+    }
+  },
+  "power_check_marginals_only": {
+    "2px": {
+      "C_vs_A": {
+        "gap": 8,
+        "p_min": 0.00390625,
+        "reachable": true,
+        "max_classical_favouring_discordants_to_reject": 5,
+        "max_C_favouring_discordants_to_reject": 13,
+        "rule": "reject (p < 0.05) iff n_classical_favouring <= max_classical_favouring_discordants_to_reject"
+      },
+      "C_vs_B": {
+        "gap": 8,
+        "p_min": 0.00390625,
+        "reachable": true,
+        "max_classical_favouring_discordants_to_reject": 5,
+        "max_C_favouring_discordants_to_reject": 13,
+        "rule": "reject (p < 0.05) iff n_classical_favouring <= max_classical_favouring_discordants_to_reject"
+      }
+    },
+    "1px": {
+      "C_vs_A": {
+        "gap": 14,
+        "p_min": 6.103515625e-05,
+        "reachable": true,
+        "max_classical_favouring_discordants_to_reject": 21,
+        "max_C_favouring_discordants_to_reject": 35,
+        "rule": "reject (p < 0.05) iff n_classical_favouring <= max_classical_favouring_discordants_to_reject"
+      },
+      "C_vs_B": {
+        "gap": 11,
+        "p_min": 0.00048828125,
+        "reachable": true,
+        "max_classical_favouring_discordants_to_reject": 13,
+        "max_C_favouring_discordants_to_reject": 24,
+        "rule": "reject (p < 0.05) iff n_classical_favouring <= max_classical_favouring_discordants_to_reject"
+      }
+    }
+  },
+  "deciding_2px_p_min_below_0.05": true,
+  "analysis_allowed": true
+}
