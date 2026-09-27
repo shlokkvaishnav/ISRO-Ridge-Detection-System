@@ -32,6 +32,13 @@ if not os.path.exists(REPO_DIR):
         check=True,
     )
 
+# Record exactly which commit the branch clone resolved to, so the run log
+# ties results to code (review round 1 on PR #6: the log previously showed
+# only "Cloning into ...", never a SHA).
+print("Cloned commit: " + subprocess.run(
+    ["git", "-C", REPO_DIR, "rev-parse", "HEAD"], capture_output=True, text=True
+).stdout.strip())
+
 sys.path.insert(0, REPO_DIR)
 os.chdir(REPO_DIR)
 

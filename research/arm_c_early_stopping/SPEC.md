@@ -44,24 +44,36 @@ Random seed/initialization is not controlled between this run and the original m
   so the best-vs-final comparison is free of the seed-variance confound the issue flagged.
   Same architecture, hyperparameters, 60 epochs and the same 6 held-out benchmark tiles
   (`val_ids.json` is identical to `results/arm_c/val_ids.json`).
+- **2026-09-27, after review round 1 on PR #6:** added a threshold sweep, per-tile mean
+  coverage, and lift over a random mask
+  (`threshold_sweep.py` -> `results/arm_c_early_stopping/threshold_sweep.json`). These are
+  post-hoc diagnostics requested in review. The pre-registered metric is still recall and
+  coverage at the fixed 0.5 threshold.
 
 ## Results
 
-Kaggle GPU run of commit `9b37874` (the kernel clones this branch; the clone's HEAD is
-recorded in `results/arm_c_early_stopping/kaggle_run.log`). All outputs are in
-`results/arm_c_early_stopping/`.
+**Provenance.** The Kaggle kernel clones the branch `experiment/arm-c-early-stopping`, not
+a pinned commit. The log records only `Cloning into ...`, not a SHA. The run started one
+minute after `9b37874` was pushed, so the clone was presumably `9b37874`. The only later
+commit touches no code. The committed checkpoints re-evaluate on CPU to exactly the
+committed `eval.json`/`eval_best.json`, per tile, checked independently by the reviewer and
+by `threshold_sweep.py`. `kaggle_train.py` now prints the cloned `HEAD` so future logs
+record it. All outputs are in `results/arm_c_early_stopping/`.
 
 Validation loss (on the 6 held-out benchmark tiles) bottoms out at **epoch 7 (0.553)**, then
-rises to 1.451 by epoch 60. The merged run's minimum was epoch 4 (0.545), rising to 1.139,
-so the two trajectories are similar in shape.
+rises to 1.451 by epoch 60. The merged run's minimum was epoch 4 (0.545), rising to 1.139.
+Val loss is noisy near the minimum (0.583 at ep 5, 0.553 at ep 7, 0.566 at ep 14), so which
+epoch counts as "best" is itself fragile.
 
-| Checkpoint | Recall (57 vertices, 6 tiles) | Coverage | File |
-|---|---|---|---|
-| Merged run, final (epoch 60), earlier run, baseline | 40/57 = 70.2% | 30.8% | `results/arm_c/eval.json` |
-| **This run, best val loss (epoch 7)** | **40/57 = 70.2%** | **31.8%** | `eval_best.json` |
-| This run, final (epoch 60) | 12/57 = 21.1% | 18.9% | `eval.json` |
+**Pre-registered metric (threshold 0.5):**
 
-Per-tile hits (truth in brackets), recomputed by hand from the JSON files:
+| Checkpoint | Recall (57 vertices) | Coverage, pixel-weighted | Coverage, mean per tile | File |
+|---|---|---|---|---|
+| Merged run, final (ep 60), baseline | 40/57 = 70.2% | 30.8% | 34.4% | `results/arm_c/eval.json` |
+| This run, best val loss (ep 7) | 40/57 = 70.2% | 31.8% | 42.5% | `eval_best.json` |
+| This run, final (ep 60) | 12/57 = 21.1% | 18.9% | 20.5% | `eval.json` |
+
+Per-tile hits (truth in brackets), recomputed from the JSON files:
 
 | Tile | 3674 (5) | 1851 (8) | 748 (8) | 5017 (7) | 4098 (15) | 3461 (14) | Sum |
 |---|---|---|---|---|---|---|---|
@@ -69,31 +81,52 @@ Per-tile hits (truth in brackets), recomputed by hand from the JSON files:
 | This run, best (ep 7) | 5 | 8 | 4 | 7 | 11 | 5 | 40 |
 | This run, final (ep 60) | 2 | 3 | 0 | 2 | 1 | 4 | 12 |
 
+For the best checkpoint, 3 tiles (3674, 1851, 5017) are at 57–64% coverage and supply 20 of
+its 40 hits.
+
+**Threshold sweep (post-hoc).** Each cell is recall at pixel-weighted coverage, with lift
+over a random mask of the same per-tile coverage in brackets. Expected random hits are
+Σ truth_i × coverage_i.
+
+| Checkpoint | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 |
+|---|---|---|---|---|---|
+| Merged final (ep 60) | 41/57, 36.6% (1.96×) | 41, 33.6% (2.13×) | 40, 30.8% (2.26×) | 36, 27.9% (2.23×) | 26, 24.8% (1.81×) |
+| This run, best (ep 7) | 56/57, 56.1% (1.66×) | 49, 43.0% (1.84×) | 40, 31.8% (1.96×) | 24, 20.2% (1.77×) | 12, 8.9% (1.87×) |
+| This run, final (ep 60) | 15/57, 24.9% (1.07×) | 13, 21.6% (1.06×) | 12, 18.9% (1.12×) | 11, 16.2% (1.19×) | 9, 13.5% (1.17×) |
+
 ## Interpretation
 
-- **The loss-optimal checkpoint matches the headline recall** (40/57 vs 40/57), with
-  coverage essentially unchanged (31.8% vs 30.8%). This is outcome (a) from the issue:
-  similar recall, and the pre-registered hypothesis that coverage would be *lower* is
-  **not supported**.
-- **The overfit final checkpoint is not reliable.** Within one run, going from epoch 7 to
-  epoch 60 cut recall from 70.2% to 21.1%. The merged run's epoch-60 checkpoint scored
-  70.2%, so the epoch-60 result swings from 21% to 70% between two runs of identical code.
-  The merged headline came from an unstable checkpoint that happened to land well. The
-  number itself survives, but only because the loss-optimal checkpoint reproduces it.
-- **The aggregate match partly hides per-tile differences.** Tile 3461 drops from 9/14 to
-  5/14 and 748 rises from 2/8 to 4/8. With 57 vertices, a tie at 40 should be read as
-  "about the same level", not as an exact replication.
-- **New confound, disclosed rather than hidden:** the "best" epoch is chosen by val loss
-  on the same 6 tiles used to score recall. That is selection on the benchmark, so the
-  best-checkpoint number is mildly optimistic. It is mild because selection uses BCE loss,
-  not recall, and picks one of 60 epochs. A clean fix needs a separate validation split for
-  early stopping, disjoint from the 6 benchmark tiles.
+- **Against the pre-registration, this is the null result, not outcome (a).** Outcome (a)
+  required similar recall *with lower coverage*. At the pre-registered 0.5 threshold,
+  recall is identical (40/57) and pixel-weighted coverage is similar (31.8% vs 30.8%). The
+  hypothesis that the loss-optimal checkpoint would show lower coverage is not supported.
+  Following the null/(a) action, 70.2% stays as the reported number, with the qualifiers
+  below.
+- **What the match does show:** about 70% recall at about 31% pixel-weighted coverage is
+  reachable at the loss-optimal epoch, without training into the overfit regime.
+- **What it does not show: that the two models behave alike.** The epoch-7 model's
+  probabilities are bunched near 0.5. Its recall runs from 56/57 to 12/57 over thresholds
+  0.3–0.7, while the merged model's runs from 41 to 26. The tie at 40 is where two curves
+  with very different slopes cross at 0.5. Mean per-tile coverage is higher (42.5% vs
+  34.4%), and per-tile hits differ (3461: 9 to 5, 748: 2 to 4).
+- **After adjusting for coverage, the epoch-7 checkpoint is somewhat weaker than the
+  merged headline model at every threshold tested** (lift 1.66–1.96× vs 1.81–2.26×). The
+  headline model's discrimination is not simply an overfitting artifact that early
+  stopping removes.
+- **The epoch-60 checkpoint varies widely between runs.** It scored 70.2% (lift 2.26×) in
+  the merged run and 21.1% (lift 1.12×, about chance) in this one, with identical code.
+  With n=2, neither run can be called the typical one. Training to epoch 60 without early
+  stopping does not reliably give a useful model.
+- **Selection confound, disclosed:** the "best" epoch is chosen by val loss on the same 6
+  tiles used to score recall. That is mild selection on the benchmark (a BCE criterion,
+  one epoch out of 60). Removing it needs an early-stopping split disjoint from the
+  benchmark tiles.
 
 ## Decision
 
-Implementer's self-assessment: **MERGE**. The question is answered: the loss-optimal
-checkpoint gives 70.2% recall at 31.8% coverage, and it replaces the final checkpoint as
-the reported Arm C artifact (`results/arm_c_early_stopping/model_best.pt`). Findings tiers
-are updated in `README.md` and `research/DECISION_LOG.md`. The early-stopping selection
-confound and seed variance of the best checkpoint are left open as follow-up questions,
-not claimed as resolved.
+Implementer's self-assessment: **MERGE**. The pre-registered question is answered with raw
+evidence committed and independently re-evaluated: at the fixed 0.5 threshold, the null
+holds. The 70.2% headline stays, qualified. It is threshold-sensitive at the loss-optimal
+epoch, somewhat weaker after adjusting for coverage, and epoch-60 training is unreliable
+across runs. Findings tiers are updated in `README.md` and `research/DECISION_LOG.md`.
+The early-stopping selection confound and seed variance stay OPEN as follow-up questions.

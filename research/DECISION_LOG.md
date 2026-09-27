@@ -2,37 +2,39 @@
 
 Newest first.
 
-## 2026-09-27 — Arm C's 70.2% holds at the loss-optimal checkpoint; the overfit final checkpoint does not
+## 2026-09-27 — Arm C at the loss-optimal checkpoint: same 70.2% at the pre-registered threshold (null result), with qualifiers
 
 Issue [#5](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/5), full
-writeup in `research/arm_c_early_stopping/SPEC.md`, outputs in
-`results/arm_c_early_stopping/`. One Kaggle retrain with the same code, hyperparameters and
-6 held-out benchmark tiles as the merged run. Both the best-val-loss checkpoint and the
-final checkpoint were saved from the same run and scored on the same benchmark.
+writeup in `research/arm_c_early_stopping/SPEC.md`, outputs (including a post-hoc threshold
+sweep) in `results/arm_c_early_stopping/`. One Kaggle retrain with the same code,
+hyperparameters and 6 held-out benchmark tiles as the merged run. The best-val-loss and
+final checkpoints were both saved from that run and scored on the same benchmark.
 
 **ESTABLISHED**
-> The best-val-loss checkpoint (epoch 7) gets 40/57 (70.2%) recall at 31.8% coverage, the
-> same recall as the merged headline (40/57, 30.8%). The final checkpoint from the same run
-> (epoch 60) gets only 12/57 (21.1%) at 18.9%. Arithmetic rechecked from per-tile numbers.
+> At the pre-registered 0.5 threshold, the loss-optimal checkpoint (epoch 7) gets 40/57
+> (70.2%) recall at 31.8% pixel-weighted coverage, the same as the merged headline (40/57,
+> 30.8%). About 70% recall at about 31% coverage is therefore reachable without training
+> into the overfit regime. Against the pre-registration this is the **null**, not outcome
+> (a): coverage was not lower.
 >
-> The epoch-60 checkpoint is unstable across runs: 70.2% in the merged run, 21.1% here,
-> with identical code. The merged 70.2% was a favourable draw from an overfit checkpoint.
-> The number stands, but it now rests on the loss-optimal checkpoint. That checkpoint
-> becomes Arm C's reported artifact (`results/arm_c_early_stopping/model_best.pt`).
+> The epoch-60 checkpoint varies widely between runs: 70.2% (lift 2.26× over a random mask
+> of equal coverage) in the merged run, 12/57 = 21.1% (1.12×, about chance) in this one,
+> with identical code.
 
-**Not supported**
-> The pre-registered hypothesis that the loss-optimal checkpoint would show *lower*
-> coverage: it is 31.8% vs 30.8%, essentially the same.
+**Qualifiers**
+> The match is threshold-sensitive. Across thresholds 0.3–0.7, epoch-7 recall runs 56 to
+> 12 of 57, while the merged model's runs 41 to 26. After adjusting for coverage, epoch 7 is
+> somewhat weaker at every threshold tested (lift 1.66–1.96× vs 1.81–2.26×). Mean per-tile
+> coverage is 42.5% vs 34.4%, and per-tile hits differ (3461: 9 to 5, 748: 2 to 4).
 
 **New confound**
-> The best epoch is chosen by val loss on the same 6 tiles used to score recall. That is
-> mild selection on the benchmark (a BCE-loss criterion, one epoch out of 60). A clean
-> estimate needs an early-stopping split disjoint from the benchmark tiles.
+> The best epoch is chosen by val loss on the same 6 tiles used to score recall, and val
+> loss is noisy near its minimum. That is mild selection on the benchmark. A clean estimate
+> needs an early-stopping split disjoint from the benchmark tiles.
 
 **OPEN**
-> Seed variance of the *best* checkpoint: two runs, two different best epochs (4 and 7),
-> and only one of them evaluated. Per-tile hits also shift (3461: 9 to 5, 748: 2 to 4)
-> while the total stays at 40.
+> Seed variance of both checkpoints: n=2 runs, and only one loss-optimal checkpoint has been
+> evaluated.
 
 ## 2026-09-22 — Arm C (DBR-Net-inspired) beats both classical arms on the benchmark, with a real overfitting confound attached
 
