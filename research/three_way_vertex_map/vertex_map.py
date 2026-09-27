@@ -308,6 +308,40 @@ def tolerance_check(V) -> dict:
     return out
 
 
+def descriptive_extras(V, tiles, arm: str) -> dict:
+    """NOT pre-registered. Two descriptive checks added by the implementer to
+    judge outcome (d) and the mask-shape confound; neither decides anything.
+    - leave-one-tile-out: metrics 1-2 recomputed with each tile dropped, to see
+      whether the per-vertex result is carried by a single tile.
+    - shared-miss x tolerance: of the 21 exact-pixel shared misses, how many
+      A or B reach within 1/2 px, split by whether this Arm C checkpoint hit them.
+    """
+    coverage = {t["tile"]: t["coverage"] for t in tiles}
+    loto = {}
+    for drop in BENCHMARK:
+        vs = [v for v in V if v["tile"] != drop]
+        m1 = subset_stats([v for v in vs if not v["A"] and not v["B"]], arm, coverage)
+        m2 = subset_stats([v for v in vs if v["A"] or v["B"]], arm, coverage)
+        loto[str(drop)] = {
+            "shared_miss_hits": m1["hits"], "shared_miss_n": m1["n"],
+            "shared_miss_expected": m1["expected_hits_coverage_matched"],
+            "shared_miss_lift": m1["lift"], "shared_miss_p": m1["p_one_sided_ge"],
+            "caught_lift": m2["lift"],
+            "lift_ratio": round(m1["lift"] / m2["lift"], 4) if m1["lift"] and m2["lift"] else None,
+        }
+    shared = [v for v in V if not v["A"] and not v["B"]]
+    tol = {}
+    for t in TOLERANCES_PX:
+        near = [v for v in shared if v[f"A_tol{t}"] or v[f"B_tol{t}"]]
+        tol[f"tol{t}px"] = {
+            "shared_miss_reached_by_A_or_B": len(near),
+            "of_which_C_hit": sum(v[arm] for v in near),
+            "still_missed_by_A_and_B": len(shared) - len(near),
+            "of_which_C_hit_still_missed": sum(v[arm] for v in shared if v not in near),
+        }
+    return {"leave_one_tile_out": loto, "shared_miss_by_tolerance": tol}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--analyze", action="store_true")
@@ -334,6 +368,10 @@ def main() -> None:
         "primary_C": analyze_arm(V, tiles, "C"),
         "secondary_C2": analyze_arm(V, tiles, "C2"),
         "tolerance_check_A_B": tolerance_check(V),
+        "not_preregistered_descriptive": {
+            "C": descriptive_extras(V, tiles, "C"),
+            "C2": descriptive_extras(V, tiles, "C2"),
+        },
     }
     with open(os.path.join(OUT_DIR, "analysis.json"), "w") as f:
         json.dump(result, f, indent=2)
