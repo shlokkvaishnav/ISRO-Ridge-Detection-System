@@ -64,6 +64,28 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > runs of identical code (`research/arm_c_early_stopping/SPEC.md`). Full numbers, per-tile
 > breakdown, and the five infrastructure bugs hit getting a Kaggle GPU run working at all:
 > `research/arm_c_deep_learning/SPEC.md`.
+>
+> **Three-way per-vertex map, on this benchmark
+> ([#7](https://github.com/shlokkvaishnav/ISRO-Ridge-Detection-System/issues/7),
+> `research/three_way_vertex_map/SPEC.md`):**
+> - **Reproduction first.** The A/B 12/11/13/21 split and both Arm C checkpoints' per-tile
+>   scores were reproduced exactly before anything was read.
+> - **Arm C catches most of the classical arms' shared misses.** Of the 21 vertices both
+>   classical arms miss, the merged Arm C checkpoint catches 14. A random mask with the same
+>   per-tile coverage would catch 6.0 (exact one-sided p = 1.9e-4, vertices treated as
+>   independent, so optimistic).
+> - **No lower hit rate on the hard set.** Its lift over chance there (2.32x) is about the
+>   same as on the 36 classically-caught vertices (2.23x). Only a hit-rate gap of about 35 pp
+>   or more was detectable at this n.
+> - **The epoch-7 checkpoint agrees less cleanly:** 15/21 against 8.3 expected, p = 0.0016,
+>   but with a 12% lower lift on the shared-miss set. That result depends on tile 4098.
+> - **The residual set is small and concentrated.** 7 vertices are missed by all three arms,
+>   4 of them on tile 748.
+> - **Caveat: part of the classical "blind spot" is the exact-pixel metric.** At a 2 px
+>   tolerance, the set both A and B miss shrinks from 21 to 12. Arm C still hits 8 of those
+>   12, but Arm C was not itself scored at tolerance.
+> - **Scope.** This holds on this benchmark only: 6 tiles, 57 vertices, two checkpoints. It
+>   does not show that Arm C has no blind spots in general.
 
 **HYPOTHESIS**
 > That the real-tile clutter problem reflects something more fundamental than either
@@ -77,6 +99,13 @@ pilot pulled directly from the remote LROC WAC + GLD100 mosaics (no full downloa
 > continued classical-arm tuning — Arm C's result below is consistent with this, not
 > conclusive proof given its overfitting confound. Still needs the per-morphology-class/
 > degradation-bucket breakdown `plan.md` calls for, not just an aggregate number.
+>
+> **Weakened by the three-way map (#7):** as a limit on *every* method family, this
+> hypothesis now has evidence against it on this benchmark. Arm C reaches 14 of the 21
+> vertices both classical arms miss, well above chance, so those vertices are mostly not
+> undetectable from DEM-derived inputs at 100m/px. The hypothesis survives only as an
+> account of why the *classical* filters fail. The small residual set that all three arms
+> miss (7 vertices, 4 on one tile) is just as compatible with catalog or registration error.
 
 **OPEN**
 > Whether `meijering`/`sato` (Arm B's other two methods, not yet tried) perform
